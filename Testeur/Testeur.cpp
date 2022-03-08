@@ -20,7 +20,7 @@
 #include <eigen-3.4.0/Eigen/Dense>
 #include "BSEULERND.h"
 
-///HELLO
+///HELLO adam stp marche
 
 // HELLO BIS TRES ZZZ
 

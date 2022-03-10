@@ -159,6 +159,7 @@
     <ClInclude Include="BSEULER1D.h" />
     <ClInclude Include="BSEULERND.h" />
     <ClInclude Include="BSND.h" />
+    <ClInclude Include="EUBasketCall.h" />
     <ClInclude Include="EUCall.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Milstein1D.h" />
@@ -173,6 +174,7 @@
     <ClCompile Include="BSEULER1D.cpp" />
     <ClCompile Include="BSEULERND.cpp" />
     <ClCompile Include="BSND.cpp" />
+    <ClCompile Include="EUBasketCall.cpp" />
     <ClCompile Include="EUCall.cpp" />
     <ClCompile Include="Milstein1D.cpp" />
     <ClCompile Include="Option.cpp" />

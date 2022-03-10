@@ -19,6 +19,8 @@
 #include "EUCall.h"
 #include <eigen-3.4.0/Eigen/Dense>
 #include "BSEULERND.h"
+#include <numeric>
+#include "EUBasketCall.h"
 
 ///HELLO adam stp marche
 
@@ -35,22 +37,25 @@ int main()
     //SDE Solver
     double s = 100.;
     double vol = 0.1;
-    double r = 0.0001;
+    std::vector<double> r = { 0.0001 };
 
-    BSEULER1D* Euler = new BSEULER1D(Normal, s, r, vol);
+    BSEULER1D* Euler = new BSEULER1D(Normal, s, r[0], vol);
 
-    Milstein1D* Milstein = new Milstein1D(Normal, s, r, vol);
-    Milstein->Simulate(0, 10, 10);
+    Milstein1D* Milstein = new Milstein1D(Normal, s, r[0], vol);
+    //Milstein->Simulate(0, 10, 10);
 
-    std::cout << "Pricing Call" << std::endl;
-    EUCall* call = new EUCall(Milstein, s, 100, r, vol, 10);
-    std::cout << "Price Call : " << call->ComputePrice(1000) << std::endl;
+    //std::cout << "Pricing Call " << std::endl;
+    ////EUCall* call = new EUCall(Milstein, 100, r, 10);
+    //std::cout << "Price Call : " << call->ComputePrice(1000) << std::endl;
 
     //N dimensions
     std::cout << "3 dimensions: " << std::endl;
     std::vector<double> S = { 100.0, 50.0, 60.0 };
     std::vector<double> R = { 0.0, 0.0, 0.0 };
-    Eigen::MatrixXd Vol{ {0.05,0.003,0.002},{0.003,0.07,0.001},{0.002,0.001,0.08} };
+    std::vector<double> W = { 1./3, 1./3, 1./3 };
+
+    //Eigen::MatrixXd Vol{ {0.05,0.003,0.002},{0.003,0.07,0.001},{0.002,0.001,0.08} };
+    Eigen::MatrixXd Vol{ {0.05,0.00,0.00},{0.00,0.07,0.00},{0.00,0.00,0.08} };
 
     BSEULERND* EulerND = new BSEULERND(Generator, S, R, Vol, 3);
     EulerND->Simulate(0, 30.0 / 365.0, 30);
@@ -59,6 +64,23 @@ int main()
     {
         std::cout << i << ": " << EulerND->Get_Value(30.0 / 365.0, i) << std::endl;
     }
+
+    std::cout << "Pricing Basket Call" << std::endl;
+    EUBasketCall* BasketCall = new EUBasketCall(EulerND, 70, R, 30.0 / 365.0,W);
+    std::cout << "Price Basket Call : " << BasketCall->ComputePrice(1000) << std::endl;
+
+    Milstein = new Milstein1D(Normal, 100, r[0], 0.05);
+    EUCall* call = new EUCall(Milstein, 100, r, 30.0 / 365.0);
+    //std::cout << "ok" << std::endl;
+    std::cout << "Price Call 1 : " << call->ComputePrice(1000) << std::endl;
+
+    Milstein = new Milstein1D(Normal, 50, r[0], 0.07);
+    call = new EUCall(Milstein, 50, r, 30.0 / 365.0);
+    std::cout << "Price Call 2 : " << call->ComputePrice(1000) << std::endl;
+
+    Milstein = new Milstein1D(Normal, 60, r[0], 0.08);
+    call = new EUCall(Milstein, 60, r, 30.0 / 365.0);
+    std::cout << "Price Call 3 : " << call->ComputePrice(1000) << std::endl;
 
 }
 

@@ -11,8 +11,8 @@ EUCall::EUCall()
 {
 }
 
-EUCall::EUCall(RandomProcess* _process, double _s, double _K, double _r, double _vol, double _T) : 
-	Option(_process, _s, _K, _r, _vol, _T)
+EUCall::EUCall(RandomProcess* _process,  double _K, std::vector<double> _r,  double _T)
+	: Option(_process, _K, _r, _T)
 {
 
 }
@@ -24,12 +24,12 @@ double EUCall::ComputePrice(int NbSim)
 
 	for (int n = 0; n < NbSim; ++n)
 	{
-		process -> Simulate(0, T, T);
+		process->Simulate(0, T, T*365);
 		last_value = std::max(process->Get_Value(T) - K, 0.);
 		somme = somme + last_value;
 	}
 
-	double price = std::exp(-r * T) * (somme / NbSim);
+	double price = std::exp(-r[0] * T) * (somme / NbSim);
 	return price;
 
 }

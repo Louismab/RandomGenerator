@@ -17,16 +17,16 @@ BSEULERND::BSEULERND(RandomGenerator* _gen, std::vector<double> _s, std::vector<
     Eigen::LLT<Eigen::MatrixXd> llt(vol); 
     EigenSolver<MatrixXd> es(vol);
 
-    if (1==1) //if vol not definite positive
+    if (vol.determinant() == 0) //if vol not definite positive
     {
         MatrixXcd D = es.eigenvalues().asDiagonal();
         std::cout << D << std::endl;
         MatrixXcd P = es.eigenvectors();
         std::cout << P << std::endl;
 
-        B = P * D;
+        //B = P * D.sqrt();
 
-        std::cout << B << std::endl;
+        std::cout << P * D << std::endl;
     }
 
     else //vol is definite positive

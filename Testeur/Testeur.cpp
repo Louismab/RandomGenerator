@@ -28,121 +28,121 @@ int main()
 {
     RandomGenerator* Generator;
     LinearCongruential* Uniform = new LinearCongruential(27, 17, 43, 100);
-    for (int i = 0;i < 10;++i)
+    /*for (int i = 0;i < 10;++i)
     {
         std::cout << Uniform->Generate() << std::endl;
     }
 
-    std::cout << "Mean= " << Uniform->Mean(10000) << std::endl;
+    std::cout << "Mean= " << Uniform->Mean(10000) << std::endl;*/
 
     EcuyerCombined* Uniform2 = new EcuyerCombined();
-    for (int i = 0;i < 10;++i)
+    /*for (int i = 0;i < 10;++i)
     {
         std::cout << Uniform2->Generate() << std::endl;
     }
 
-    std::cout << "Mean2= " << Uniform2->Mean(10000) << std::endl;
+    std::cout << "Mean2= " << Uniform2->Mean(10000) << std::endl;*/
 
-    ExponentialID* Expo = new ExponentialID(2, Uniform2);
+    //ExponentialID* Expo = new ExponentialID(2, Uniform2);
 
-    //head tail
-    std::cout << "HeadTail" << std::endl;
-    Generator = new HeadTail (Uniform2);
-    for (int i = 0;i < 10;++i)
-    {
-        std::cout << Generator->Generate() << std::endl;
-    }
+    ////head tail
+    //std::cout << "HeadTail" << std::endl;
+    //Generator = new HeadTail (Uniform2);
+    //for (int i = 0;i < 10;++i)
+    //{
+    //    std::cout << Generator->Generate() << std::endl;
+    //}
 
-    //bernoulli
-    std::cout << "Bernoulli" << std::endl;
-    Generator = new Bernoulli(Uniform2,0.1);
-    for (int i = 0;i < 10;++i)
-    {
-        std::cout << Generator->Generate() << std::endl;
-    }
+    ////bernoulli
+    //std::cout << "Bernoulli" << std::endl;
+    //Generator = new Bernoulli(Uniform2,0.1);
+    //for (int i = 0;i < 10;++i)
+    //{
+    //    std::cout << Generator->Generate() << std::endl;
+    //}
 
-    //binomial
-    std::cout << "Binomial" << std::endl;
-    Generator = new Binomial(Uniform2, 100,0.1);
-    for (int i = 0;i < 10;++i)
-    {
-        std::cout << Generator->Generate() << std::endl;
-    }
+    ////binomial
+    //std::cout << "Binomial" << std::endl;
+    //Generator = new Binomial(Uniform2, 100,0.1);
+    //for (int i = 0;i < 10;++i)
+    //{
+    //    std::cout << Generator->Generate() << std::endl;
+    //}
 
-    //finite set
-    std::cout << "Finite Set" << std::endl;
-    std::vector<double> _values = { 5, 10};
-    std::vector<double> _probas = { 0.9, 0.1};
-    Generator = new FiniteSet(Uniform2, _values, _probas);
-    for (int i = 0;i < 10;++i)
-    {
-        std::cout << Generator->Generate() << std::endl;
-    }
+    ////finite set
+    //std::cout << "Finite Set" << std::endl;
+    //std::vector<double> _values = { 5, 10};
+    //std::vector<double> _probas = { 0.9, 0.1};
+    //Generator = new FiniteSet(Uniform2, _values, _probas);
+    //for (int i = 0;i < 10;++i)
+    //{
+    //    std::cout << Generator->Generate() << std::endl;
+    //}
 
-    //Poisson Algo 1
-    std::cout << "Poisson Algo 1" << std::endl;
-    Generator = new PoissonAlgo1(2,Uniform2);
-    std::cout << "Mean= " << Generator->Mean(10000) << std::endl;
-    std::cout << "Variance= " << Generator->Variance(10000) << std::endl;
+    ////Poisson Algo 1
+    //std::cout << "Poisson Algo 1" << std::endl;
+    //Generator = new PoissonAlgo1(2,Uniform2);
+    //std::cout << "Mean= " << Generator->Mean(10000) << std::endl;
+    //std::cout << "Variance= " << Generator->Variance(10000) << std::endl;
 
-    //Poisson Algo 2
-    std::cout << "Poisson Algo 2" << std::endl;
-    Generator = new PoissonAlgo2(Expo);
-    std::cout << "Mean= " << Generator->Mean(10000) << std::endl;
-    std::cout << "Variance= " << Generator->Variance(10000) << std::endl;
+    ////Poisson Algo 2
+    //std::cout << "Poisson Algo 2" << std::endl;
+    //Generator = new PoissonAlgo2(Expo);
+    //std::cout << "Mean= " << Generator->Mean(10000) << std::endl;
+    //std::cout << "Variance= " << Generator->Variance(10000) << std::endl;
 
 
-    //Exponential ID
-    std::cout << "Exponential ID" << std::endl;
-    Generator = new ExponentialID(2, Uniform2);
-    std::cout << "Mean= " << Generator->Mean(10000) << std::endl;
-    std::cout << "Variance= " << Generator->Variance(10000) << std::endl;
+    ////Exponential ID
+    //std::cout << "Exponential ID" << std::endl;
+    //Generator = new ExponentialID(2, Uniform2);
+    //std::cout << "Mean= " << Generator->Mean(10000) << std::endl;
+    //std::cout << "Variance= " << Generator->Variance(10000) << std::endl;
 
     //Normal BM
-    std::cout << "Normal BM" << std::endl;
+    //std::cout << "Normal BM" << std::endl;
     NormalBoxMuller* Normal = new NormalBoxMuller(0, 1, Uniform2);
-    for (int i = 0;i < 10;++i)
-    {
-        std::cout << Normal->Generate() << std::endl;
-    }
-    std::cout << "Mean= " << Normal->Mean(10000) << std::endl;
-    std::cout << "Variance= " << Normal->Variance(10000) << std::endl;
+    //for (int i = 0;i < 10;++i)
+    //{
+    //    std::cout << Normal->Generate() << std::endl;
+    //}
+    //std::cout << "Mean= " << Normal->Mean(10000) << std::endl;
+    //std::cout << "Variance= " << Normal->Variance(10000) << std::endl;
 
-    //Normal CLT
-    std::cout << "Normal CLT" << std::endl;
+    ////Normal CLT
+    //std::cout << "Normal CLT" << std::endl;
     Generator = new NormalCLT(0, 1, Uniform2);
-    for (int i = 0;i < 10;++i)
-    {
-        std::cout << Generator->Generate() << std::endl;
-    }
-    std::cout << "Mean= " << Generator->Mean(10000) << std::endl;
-    std::cout << "Variance= " << Generator->Variance(10000) << std::endl;
+    //for (int i = 0;i < 10;++i)
+    //{
+    //    std::cout << Generator->Generate() << std::endl;
+    //}
+    //std::cout << "Mean= " << Generator->Mean(10000) << std::endl;
+    //std::cout << "Variance= " << Generator->Variance(10000) << std::endl;
 
     //SDE Solver
     double s = 100.;
     double vol = 0.1;
     double r = 0.0001;
-    std::cout << "BSEULER1D" << std::endl;
+    //std::cout << "BSEULER1D" << std::endl;
     BSEULER1D* Euler = new BSEULER1D(Normal, s, r, vol);
     Euler->Simulate(0, 10, 10);
     //std::cout << "ok3" << std::endl;
     double FinalValue= Euler->Get_Value(10);
-    std::cout << "Final Value" << FinalValue << std::endl;
-    for (double i = 0;i < 11;i++)
-    {
-        std::cout << i << ": " << Euler->Get_Value(i) << std::endl;
-    }
+    //std::cout << "Final Value" << FinalValue << std::endl;
+    //for (double i = 0;i < 11;i++)
+    //{
+    //    std::cout << i << ": " << Euler->Get_Value(i) << std::endl;
+    //}
 
-    std::cout << "Milstein1D" << std::endl;
+    //std::cout << "Milstein1D" << std::endl;
     Milstein1D* Milstein = new Milstein1D(Normal, s, r, vol);
     Milstein->Simulate(0, 10, 10);
     //std::cout << "ok3" << std::endl;
     FinalValue = Milstein->Get_Value(10);
-    std::cout << "Final Value" << FinalValue << std::endl;
-    for (double i = 0;i < 11;i++)
-    {
-        std::cout << i << ": " << Milstein->Get_Value(i) << std::endl;
-    }
+    //std::cout << "Final Value" << FinalValue << std::endl;
+    //for (double i = 0;i < 11;i++)
+    //{
+    //    std::cout << i << ": " << Milstein->Get_Value(i) << std::endl;
+    //}
 
     //pricing call
     std::cout << "pricing call" << std::endl;

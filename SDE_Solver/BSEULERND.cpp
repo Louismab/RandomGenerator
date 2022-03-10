@@ -14,19 +14,14 @@ BSEULERND::BSEULERND()
 BSEULERND::BSEULERND(RandomGenerator* _gen, std::vector<double> _s, std::vector<double> _r, Eigen::MatrixXd _vol, int dim)
 	: BSND(_gen, _s, _r, _vol, dim)
 {
-    Eigen::LLT<Eigen::MatrixXd> llt(vol); 
+    
     EigenSolver<MatrixXd> es(vol);
 
     if (vol.determinant() == 0) //if vol not definite positive
     {
-        MatrixXcd D = es.eigenvalues().asDiagonal();
-        std::cout << D << std::endl;
-        MatrixXcd P = es.eigenvectors();
-        std::cout << P << std::endl;
-
-        //B = P * D.sqrt();
-
-        std::cout << P * D << std::endl;
+        MatrixXd D = es.pseudoEigenvalueMatrix();
+        MatrixXd P = es.pseudoEigenvectors();
+        B = P * D;
     }
 
     else //vol is definite positive

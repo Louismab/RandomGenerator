@@ -6,9 +6,11 @@ class EUCall : public Option
 {
 	public:
 		EUCall();
-		EUCall(RandomProcess* _process, double _s, double _K, double _r, double _vol, double _T);
+		EUCall(RandomProcess* _process, double _K, std::vector<double> _r, double _T);
 
 		double ComputePrice(int NbSim);
+
+
 
 };
 

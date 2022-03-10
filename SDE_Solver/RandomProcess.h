@@ -11,6 +11,7 @@ class RandomProcess
 		void add_path(SinglePath* Path);
 		SinglePath* GetPath(int dimension = 0);
 		const double Get_Value(double time,int dim=0);
+		const std::vector<double> Get_ValueND(double time);
 	
 	protected:
 		std::vector<SinglePath*> paths;

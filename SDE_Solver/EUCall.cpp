@@ -17,7 +17,7 @@ EUCall::EUCall(RandomProcess* _process,  double _K, std::vector<double> _r,  dou
 
 }
 
-double EUCall::ComputePrice(int NbSim)
+double EUCall::ComputePrice(int NbSim, bool antithetic)
 {
 	double somme = 0.;
 	double last_value;

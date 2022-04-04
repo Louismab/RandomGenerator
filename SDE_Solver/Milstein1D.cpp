@@ -32,3 +32,7 @@ void Milstein1D::Simulate(double start_time, double end_time, size_t nb_steps)
 	paths[0] = path;
 
 }
+
+void Milstein1D::Simulate_Antithetic(double start_time, double end_time, size_t nb_steps)
+{
+}

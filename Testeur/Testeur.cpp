@@ -21,10 +21,14 @@
 #include "BSEULERND.h"
 #include <numeric>
 #include "EUBasketCall.h"
+#include "VanDerCorput.h"
+#include <math.h>
+#include <cmath>
 
 ///HELLO adam stp marche
 
 // HELLO BIS TRES ZZZ
+
 
 int main()
 {
@@ -55,9 +59,11 @@ int main()
     std::vector<double> W = { 1./3, 1./3, 1./3 };
 
     //Eigen::MatrixXd Vol{ {0.05,0.003,0.002},{0.003,0.07,0.001},{0.002,0.001,0.08} };
-    Eigen::MatrixXd Vol{ {0.05,0.00,0.00},{0.00,0.07,0.00},{0.00,0.00,0.08} };
+    Eigen::MatrixXd Vol{ {0.5,0.00,0.00},{0.00,0.5,0.00},{0.00,0.00,0.5} };
 
+    
     BSEULERND* EulerND = new BSEULERND(Generator, S, R, Vol, 3);
+    std::cout << "test normal" << std::endl;
     EulerND->Simulate(0, 30.0 / 365.0, 30);
     std::cout << "Final Value : " << std::endl;
     for (int i = 0; i < 3; i++)
@@ -65,11 +71,8 @@ int main()
         std::cout << i << ": " << EulerND->Get_Value(30.0 / 365.0, i) << std::endl;
     }
 
-    std::cout << "Pricing Basket Call" << std::endl;
-    EUBasketCall* BasketCall = new EUBasketCall(EulerND, 70, R, 30.0 / 365.0,W);
-    std::cout << "Price Basket Call : " << BasketCall->ComputePrice(1000) << std::endl;
 
-    Milstein = new Milstein1D(Normal, 100, r[0], 0.05);
+    /*Milstein = new Milstein1D(Normal, 100, r[0], 0.05);
     EUCall* call = new EUCall(Milstein, 100, r, 30.0 / 365.0);
     //std::cout << "ok" << std::endl;
     std::cout << "Price Call 1 : " << call->ComputePrice(1000) << std::endl;
@@ -81,6 +84,22 @@ int main()
     Milstein = new Milstein1D(Normal, 60, r[0], 0.08);
     call = new EUCall(Milstein, 60, r, 30.0 / 365.0);
     std::cout << "Price Call 3 : " << call->ComputePrice(1000) << std::endl;
+    */
+
+    VanDerCorput* Vdc = new VanDerCorput();
+
+    std::cout << "test antithetic" << std::endl;
+    EulerND->Simulate_Antithetic(0, 30.0 / 365.0, 30);
+    std::cout << "Final Value : " << std::endl;
+    for (int i = 0; i < 6; i++)
+    {
+        std::cout << i << ": " << EulerND->Get_Value(30.0 / 365.0, i) << std::endl;
+    }
+
+    std::cout << "Pricing Basket Call" << std::endl;
+    EUBasketCall* BasketCall = new EUBasketCall(EulerND, 70, R, 30.0 / 365.0, W);
+    std::cout << "Price Basket Call : " << BasketCall->ComputePrice(10) << std::endl;
+    std::cout << "Price Basket Call Anti : " << BasketCall->ComputePrice(10,true) << std::endl;
 
 }
 

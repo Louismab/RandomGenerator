@@ -78,6 +78,12 @@
     <ClInclude Include="PoissonAlgo2.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="QuasiGenerator.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="VanDerCorput.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -138,6 +144,12 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="PoissonAlgo2.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="QuasiGenerator.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="VanDerCorput.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

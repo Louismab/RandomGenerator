@@ -29,7 +29,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -173,8 +173,10 @@
     <ClInclude Include="PoissonAlgo1.h" />
     <ClInclude Include="PoissonAlgo2.h" />
     <ClInclude Include="PseudoGenerator.h" />
+    <ClInclude Include="QuasiGenerator.h" />
     <ClInclude Include="RandomGenerator.h" />
     <ClInclude Include="UniformGenerator.h" />
+    <ClInclude Include="VanDerCorput.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bernoulli.cpp" />
@@ -200,8 +202,10 @@
     <ClCompile Include="PoissonAlgo1.cpp" />
     <ClCompile Include="PoissonAlgo2.cpp" />
     <ClCompile Include="PseudoGenerator.cpp" />
+    <ClCompile Include="QuasiGenerator.cpp" />
     <ClCompile Include="RandomGenerator.cpp" />
     <ClCompile Include="UniformGenerator.cpp" />
+    <ClCompile Include="VanDerCorput.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

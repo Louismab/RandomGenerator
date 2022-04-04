@@ -30,14 +30,19 @@ const double RandomProcess::Get_Value(double time,int dim)
 }
 
 
-const std::vector<double> RandomProcess::Get_ValueND(double time)
+const std::vector<double> RandomProcess::Get_ValueND(double time, bool antithetic)
 {
-	std::vector<double> res(dim);
-	for (int i = 0; i < dim;i++ )
+	int d = dim;
+	if (antithetic)
+	{
+		d = dim * 2;
+	}
+
+	std::vector<double> res(d);
+	for (int i = 0; i < d;i++ )
 	{
 		res[i] = Get_Value(time, i);
 	}
 	return res;
 }
-
 

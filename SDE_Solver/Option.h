@@ -7,7 +7,7 @@ class Option
 	public:
 		Option();
 		Option(RandomProcess* _process, double _K, std::vector<double> _r, double _T);
-		virtual double ComputePrice(int NbSim) = 0;
+		virtual double ComputePrice(int NbSim, bool antithetic = false) = 0;
 
 	protected:
 		//double s;

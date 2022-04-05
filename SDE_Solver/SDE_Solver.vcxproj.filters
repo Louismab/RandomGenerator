@@ -54,6 +54,9 @@
     <ClInclude Include="EUBasketCall.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="BS_ClosedForm.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -90,6 +93,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="EUBasketCall.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="BS_ClosedForm.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

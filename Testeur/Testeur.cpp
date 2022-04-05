@@ -24,6 +24,7 @@
 #include "VanDerCorput.h"
 #include <math.h>
 #include <cmath>
+#include "BS_ClosedForm.h"
 
 ///HELLO adam stp marche
 
@@ -35,6 +36,7 @@ int main()
     RandomGenerator* Generator;
     LinearCongruential* Uniform = new LinearCongruential(27, 17, 43, 100);
     EcuyerCombined* Uniform2 = new EcuyerCombined();
+    VanDerCorput* Vdc = new VanDerCorput();
     NormalBoxMuller* Normal = new NormalBoxMuller(0, 1, Uniform2);
     Generator = new NormalCLT(0, 1, Uniform2);
 
@@ -72,23 +74,7 @@ int main()
     }
 
 
-    /*Milstein = new Milstein1D(Normal, 100, r[0], 0.05);
-    EUCall* call = new EUCall(Milstein, 100, r, 30.0 / 365.0);
-    //std::cout << "ok" << std::endl;
-    std::cout << "Price Call 1 : " << call->ComputePrice(1000) << std::endl;
-
-    Milstein = new Milstein1D(Normal, 50, r[0], 0.07);
-    call = new EUCall(Milstein, 50, r, 30.0 / 365.0);
-    std::cout << "Price Call 2 : " << call->ComputePrice(1000) << std::endl;
-
-    Milstein = new Milstein1D(Normal, 60, r[0], 0.08);
-    call = new EUCall(Milstein, 60, r, 30.0 / 365.0);
-    std::cout << "Price Call 3 : " << call->ComputePrice(1000) << std::endl;
-    */
-
-    VanDerCorput* Vdc = new VanDerCorput();
-
-    std::cout << "test antithetic" << std::endl;
+    /*std::cout << "test antithetic" << std::endl;
     EulerND->Simulate_Antithetic(0, 30.0 / 365.0, 30);
     std::cout << "Final Value : " << std::endl;
     for (int i = 0; i < 6; i++)
@@ -99,7 +85,23 @@ int main()
     std::cout << "Pricing Basket Call" << std::endl;
     EUBasketCall* BasketCall = new EUBasketCall(EulerND, 70, R, 30.0 / 365.0, W);
     std::cout << "Price Basket Call : " << BasketCall->ComputePrice(10) << std::endl;
-    std::cout << "Price Basket Call Anti : " << BasketCall->ComputePrice(10,true) << std::endl;
+    std::cout << "Price Basket Call Anti : " << BasketCall->ComputePrice(10,true) << std::endl; */
+
+    /*double S1 = 122.;
+    double K1 = 120.;
+    double sigma = 0.3;
+    double theta = 0.5;
+    double maturity = 1;
+    double rate = 0.07;
+    double priceBS = bs_price(S1 * exp(rate * maturity), K1, sigma, maturity, rate, true);*/
+
+
+    EUBasketCall* BasketCall = new EUBasketCall(EulerND, 70, R, 30.0 / 365.0, W,S,Vol);
+    std::cout << "Test ComputePrice : " << BasketCall->ComputePrice(100000) << std::endl;
+    std::cout << "Test ComputePrice_Antithetic : " << BasketCall->ComputePrice(1000, true) << std::endl;
+    std::cout << "Test ComputePrice_ControlVariate : " << BasketCall->ComputePrice_ControlVariate(1000) << std::endl;
+
+
 
 }
 
@@ -235,3 +237,17 @@ int main()
 
     //double x;
     //std::cin >> x;
+
+    /*Milstein = new Milstein1D(Normal, 100, r[0], 0.05);
+    EUCall* call = new EUCall(Milstein, 100, r, 30.0 / 365.0);
+    //std::cout << "ok" << std::endl;
+    std::cout << "Price Call 1 : " << call->ComputePrice(1000) << std::endl;
+
+    Milstein = new Milstein1D(Normal, 50, r[0], 0.07);
+    call = new EUCall(Milstein, 50, r, 30.0 / 365.0);
+    std::cout << "Price Call 2 : " << call->ComputePrice(1000) << std::endl;
+
+    Milstein = new Milstein1D(Normal, 60, r[0], 0.08);
+    call = new EUCall(Milstein, 60, r, 30.0 / 365.0);
+    std::cout << "Price Call 3 : " << call->ComputePrice(1000) << std::endl;
+    */

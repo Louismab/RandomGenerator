@@ -168,6 +168,7 @@
     <ClInclude Include="Normal.h" />
     <ClInclude Include="NormalBoxMuller.h" />
     <ClInclude Include="NormalCLT.h" />
+    <ClInclude Include="NormalInverseCdf.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Poisson.h" />
     <ClInclude Include="PoissonAlgo1.h" />
@@ -192,6 +193,7 @@
     <ClCompile Include="Normal.cpp" />
     <ClCompile Include="NormalBoxMuller.cpp" />
     <ClCompile Include="NormalCLT.cpp" />
+    <ClCompile Include="NormalInverseCdf.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

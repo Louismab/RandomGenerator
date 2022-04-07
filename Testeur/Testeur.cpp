@@ -25,6 +25,7 @@
 #include <math.h>
 #include <cmath>
 #include "BS_ClosedForm.h"
+#include "NormalInverseCdf.h"
 
 ///HELLO adam stp marche
 
@@ -87,21 +88,26 @@ int main()
     std::cout << "Price Basket Call : " << BasketCall->ComputePrice(10) << std::endl;
     std::cout << "Price Basket Call Anti : " << BasketCall->ComputePrice(10,true) << std::endl; */
 
-    /*double S1 = 122.;
+    double S1 = 122.;
     double K1 = 120.;
     double sigma = 0.3;
     double theta = 0.5;
-    double maturity = 1;
+    double maturity = 60./365.;
     double rate = 0.07;
-    double priceBS = bs_price(S1 * exp(rate * maturity), K1, sigma, maturity, rate, true);*/
-
+    double priceBS = bs_price_call(S1, K1, sigma, maturity, rate);
+    double priceBS2 = bs_price(S1 * std::exp(rate * maturity), K1, sigma, maturity, true);
+    std::cout << "Price BS Louis= " << priceBS << std::endl;
+    std::cout << "Price BS Mabille= " << priceBS2 << std::endl;
 
     EUBasketCall* BasketCall = new EUBasketCall(EulerND, 70, R, 30.0 / 365.0, W,S,Vol);
-    std::cout << "Test ComputePrice : " << BasketCall->ComputePrice(100000) << std::endl;
+    std::cout << "Test ComputePrice : " << BasketCall->ComputePrice(1000) << std::endl;
     std::cout << "Test ComputePrice_Antithetic : " << BasketCall->ComputePrice(1000, true) << std::endl;
     std::cout << "Test ComputePrice_ControlVariate : " << BasketCall->ComputePrice_ControlVariate(1000) << std::endl;
 
-
+    std::cout << "Test Van der Corput" << std::endl;
+    NormalInverseCdf* Normal2 = new NormalInverseCdf(0, 1, Vdc);
+    std::cout << "Mean= " << Normal2->Mean(10000) << std::endl;
+    std::cout << "Variance= " << Normal2->Variance(10000) << std::endl;
 
 }
 

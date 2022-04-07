@@ -24,7 +24,7 @@ double vanilla_payoff(double fwd, double strike, bool is_call)
     return std::max(is_call ? fwd - strike : strike - fwd, 0.);
 }
 
-double bs_time_value(double fwd, double strike, double volatility, double maturity, double r)
+double bs_time_value(double fwd, double strike, double volatility, double maturity)
 {
     if (strike == 0.)
     {
@@ -37,9 +37,9 @@ double bs_time_value(double fwd, double strike, double volatility, double maturi
         {
             return 0.;
         }
-
-        double d1 = (std::log(fwd / strike) + (r + 0.5 * pow(volatility, 2)) * maturity) / stddev;
-        double d2 = d1 - stddev;
+        double tmp = std::log(fwd / strike) / stddev;
+        double d1 = tmp + 0.5 * stddev;
+        double d2 = tmp - 0.5 * stddev;
         double res;
         if (fwd > strike)
         {
@@ -57,8 +57,23 @@ double bs_time_value(double fwd, double strike, double volatility, double maturi
     }
 }
 
-double bs_price(double fwd, double strike, double volatility, double maturity, double r, bool is_call)
+
+
+double bs_price(double fwd, double strike, double volatility, double maturity, bool is_call)
 {
-    return vanilla_payoff(fwd, strike, is_call) + bs_time_value(fwd, strike, volatility, maturity, r);
+    return vanilla_payoff(fwd, strike, is_call) + bs_time_value(fwd, strike, volatility, maturity);
 }
+
+double bs_price_call(double S, double strike, double volatility, double maturity, double r)
+{
+    double stddev = volatility * std::sqrt(maturity);
+    double d1 = (std::log(S / strike) + (r + 0.5 * pow(volatility, 2)) * maturity) / stddev;
+    double d2 = d1 - stddev;
+
+    double price = S* norm_cdf(d1) - strike * std::exp(-r * maturity)* norm_cdf(d2);
+
+    return price;
+
+}
+
 

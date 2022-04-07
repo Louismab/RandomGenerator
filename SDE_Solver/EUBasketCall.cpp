@@ -141,7 +141,7 @@ double Compute_E_Y(std::vector<double> S, std::vector<double> weights, double K,
 
 	vol_Y= pow(weights_M.transpose() * B * B.transpose() * weights_M,0.5);
 
-	double price = bs_price(S_Y, K, vol_Y, T, R_Y, true);
+	double price = bs_price(S_Y, K, vol_Y, T, true);
 
 	return price;
 	

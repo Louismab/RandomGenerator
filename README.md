@@ -1,6 +1,5 @@
 Plan d'attaque:
 
-•	Compléter la simulation d’un vecteur gaussien dans le cas ou V non définie positive 
 •	Pricer N calls --> faire une classe NEUcalls qui hérite de la classe option
 •	Pricer un EU basket call avec les weights (cf sujet payoff) -->question 1.a) du projet 
 

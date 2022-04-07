@@ -71,6 +71,7 @@ double EUBasketCall::ComputePrice_ControlVariate(int NbSim)
 	double X_prime;
 
 	double E_Y = Compute_E_Y(S, weights, K, r[0], Vol, T);
+	//std::cout << "E_Y" << E_Y << std::endl;
 	
 	for (int n = 0; n < NbSim; ++n)
 	{
@@ -141,7 +142,7 @@ double Compute_E_Y(std::vector<double> S, std::vector<double> weights, double K,
 
 	vol_Y= pow(weights_M.transpose() * B * B.transpose() * weights_M,0.5);
 
-	double price = bs_price(S_Y, K, vol_Y, T, true);
+	double price = bs_price_call(S_Y, K, vol_Y, T,R_Y);
 
 	return price;
 	

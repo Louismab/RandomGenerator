@@ -155,6 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BermudanCall.h" />
     <ClInclude Include="BS1D.h" />
     <ClInclude Include="BSEULER1D.h" />
     <ClInclude Include="BSEULERND.h" />
@@ -164,6 +165,7 @@
     <ClInclude Include="EUCall.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Milstein1D.h" />
+    <ClInclude Include="MilsteinND.h" />
     <ClInclude Include="Option.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RandomProcess.h" />
@@ -171,6 +173,7 @@
     <ClInclude Include="test.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BermudanCall.cpp" />
     <ClCompile Include="BS1D.cpp" />
     <ClCompile Include="BSEULER1D.cpp" />
     <ClCompile Include="BSEULERND.cpp" />
@@ -179,6 +182,7 @@
     <ClCompile Include="EUBasketCall.cpp" />
     <ClCompile Include="EUCall.cpp" />
     <ClCompile Include="Milstein1D.cpp" />
+    <ClCompile Include="MilsteinND.cpp" />
     <ClCompile Include="Option.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -34,7 +34,7 @@ double EUCall::ComputePrice(int NbSim, bool antithetic)
 
 }
 
-double ComputePrice_ControlVariate(int NbSim)
+double EUCall::ComputePrice_ControlVariate(int NbSim)
 {
-	return 0;
+	return 0.;
 }

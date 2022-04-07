@@ -8,6 +8,9 @@ Plan d'attaque:
 •	Probleme matu et step
 •	 probleme vol
 •	Implémenter des suites quasi random -->Van der Corput et Sobol
+
+detecter dim en fction de S dans les rocess de diffusion
+
 VdC : cf Python
 Sobol : https://web.maths.unsw.edu.au/~fkuo/sobol/ http://paddy3118.blogspot.com/2019/11/quasi-random-sobol-sequence.html https://github.com/dendisuhubdy/quasirandom_sequences/blob/master/cpp/sobol.cpp
 •	Implémenter simulation anthititetic : cf Python

@@ -22,3 +22,4 @@ class Option
 
 };
 
+double fp(double x, double p);

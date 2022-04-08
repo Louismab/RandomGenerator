@@ -1,23 +1,24 @@
 #include "pch.h"
-#include "BermudanCall.h"
-#include <eigen-3.4.0/Eigen/Dense>
+#include "BermudanBasketCall.h"
 
-BermudanCall::BermudanCall()
+
+BermudanBasketCall::BermudanBasketCall()
 {
 }
 
-BermudanCall::BermudanCall(RandomProcess* _process, double _K, std::vector<double> _r, double _T, std::vector<double> _exeDates, int _L)
-	: Option(_process, _K, _r, _T),exeDates(_exeDates), L(_L)
+BermudanBasketCall::BermudanBasketCall(RandomProcess* _process, double _K, std::vector<double> _r, double _T, std::vector<double> _weights, std::vector<double> _exeDates, int _L)
+	: Option(_process, _K, _r, _T), exeDates(_exeDates), L(_L), weights(_weights)
 {
 }
 
-double BermudanCall::ComputePrice(int NbSim, bool antithetic)
+double BermudanBasketCall::ComputePrice(int NbSim, bool antithetic)
 {
 
 	int nb_exe_dates = exeDates.size();
 	Eigen::MatrixXd S_exe_M(NbSim, nb_exe_dates);
 	Eigen::MatrixXd Tau(NbSim, nb_exe_dates);
-	
+	Eigen::VectorXd weights_V = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(weights.data(), weights.size());
+
 	double tk;
 	double somme = 0.;
 	double last_value;
@@ -26,12 +27,14 @@ double BermudanCall::ComputePrice(int NbSim, bool antithetic)
 	{
 		Tau(n, nb_exe_dates - 1) = T;
 		process->Simulate(0, T, T * 365);
-		
+
 		for (int k = 0; k < nb_exe_dates;k++)
 		{
-			S_exe_M(n, k) = process->Get_Value(exeDates[k]);
+			std::vector<double> Snk = process->Get_ValueND(exeDates[k]);
+			Eigen::VectorXd Snk_V = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(Snk.data(), Snk.size());
+			S_exe_M(n, k) = weights_V.transpose()* Snk_V;
 		}
-		
+
 	}
 
 	for (int k = nb_exe_dates - 2; k >= 0;k--)
@@ -49,9 +52,9 @@ double BermudanCall::ComputePrice(int NbSim, bool antithetic)
 				j--;
 			}
 
-			B(n, 0) = std::exp(-r[0] * (Tau(n, k + 1) - tk)) * std::max(S_exe_M(n, j) - K,0.);
+			B(n, 0) = std::exp(-r[0] * (Tau(n, k + 1) - tk)) * std::max(S_exe_M(n, j) - K, 0.);
 
-			
+
 			for (int z = 0;z < L;z++)
 			{
 				A(n, z) = fp(S_exe_M(n, k), z);
@@ -97,9 +100,7 @@ double BermudanCall::ComputePrice(int NbSim, bool antithetic)
 
 }
 
-
-
-double BermudanCall::ComputePrice_ControlVariate(int NbSim)
+double BermudanBasketCall::ComputePrice_ControlVariate(int NbSim)
 {
 	return 0.;
 }

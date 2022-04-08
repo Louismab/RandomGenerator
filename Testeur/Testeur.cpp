@@ -28,6 +28,7 @@
 #include "NormalInverseCdf.h"
 #include "MilsteinND.h"
 #include "BermudanCall.h"
+#include "BermudanBasketCall.h"
 
 
 int main()
@@ -76,7 +77,7 @@ int main()
 
     std::cout << "Price Call with Euler \n " << std::endl;
     EUCall* CallEuler = new EUCall(Euler, 100, r, 30. / 365.);
-    std::cout << "Price Call Euler: " << CallEuler->ComputePrice(10000) << std::endl;
+    std::cout << "Price Call Euler: " << CallEuler->ComputePrice(100000) << std::endl;
 
     std::cout << "\n " << std::endl;
 
@@ -106,13 +107,13 @@ int main()
     //----------------------------------------------------------
 
     std::cout << "Price Basket with MilsteinND : \n" << std::endl;
-    std::cout << "Price regular : " << BasketCallMilstein->ComputePrice(10000) << std::endl;
+    std::cout << "Price regular : " << BasketCallMilstein->ComputePrice(1000) << std::endl;
     //std::cout << "Price Antithetic : " << BasketCallMilstein->ComputePrice(1000, true) << std::endl;
-    std::cout << "Test ComputePrice_ControlVariate : " << BasketCallMilstein->ComputePrice_ControlVariate(10000) << std::endl;
+    std::cout << "Test ComputePrice_ControlVariate : " << BasketCallMilstein->ComputePrice_ControlVariate(1000) << std::endl;
 
     std::cout << "\n " << std::endl;
 
-    std::cout << "Price with Euler Basket 1 stock : \n" << std::endl;
+    /*std::cout << "Price with Euler Basket 1 stock : \n" << std::endl;
     std::cout << "Price regular : " << BasketCallEuler1stock->ComputePrice(10000) << std::endl;
     std::cout << "Price Antithetic : " << BasketCallEuler1stock->ComputePrice(10000, true) << std::endl;
     std::cout << "Price Control Variate : " << BasketCallEuler1stock->ComputePrice_ControlVariate(1000) << std::endl;
@@ -120,14 +121,18 @@ int main()
     std::cout << "Price with Milstein Basket 1 stock :\n" << std::endl;
     std::cout << "Price regular : " << BasketCallMilstein1stock->ComputePrice(10000) << std::endl;
     //std::cout << "Price Antithetic : " << BasketCallMilstein1stock->ComputePrice(1000, true) << std::endl;
-    std::cout << "Price Control Variate : " << BasketCallMilstein1stock->ComputePrice_ControlVariate(10000) << std::endl;
+    std::cout << "Price Control Variate : " << BasketCallMilstein1stock->ComputePrice_ControlVariate(10000) << std::endl;*/
 
     std::cout << "\n " << std::endl;
 
-    std::cout << "Bermudean Call" << std::endl;
-    std::vector<double> c = { 15. / 365.,30. / 365. };
+    std::cout << "Bermudan Call" << std::endl;
+    std::vector<double> c = {5./365., 15. / 365.,30. / 365. };
     BermudanCall* Bermudan = new BermudanCall(Euler, 100, r, 30. / 365.,c);
-    std::cout << "Price Bermudean Call: " << Bermudan->ComputePrice(5) << std::endl;
+    std::cout << "Price Bermudan Call: " << Bermudan->ComputePrice(100000) << std::endl; 
+
+    std::cout << "Bermudan Basket Call" << std::endl;
+    BermudanBasketCall* BermudanBasket = new BermudanBasketCall(MilsteinPD, 100, R, 30. / 365., W, c);
+    std::cout << "Price Bermudan Call: " << BermudanBasket->ComputePrice(1000) << std::endl;
 
 }
 

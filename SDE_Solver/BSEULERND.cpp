@@ -72,19 +72,13 @@ void BSEULERND::Simulate_Antithetic(double start_time, double end_time, size_t n
     Eigen::VectorXd last = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(s.data(), s.size());
     Eigen::VectorXd last_anti = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(s.data(), s.size());
 
-    paths.resize(dim * 2);
-
-    for (int i = 0;i < dim*2;i++)
+    for (int i = 0;i < dim;i++)
     {
         paths[i] = new SinglePath(start_time, end_time, nb_steps);
-        if (i<dim)
-        {
-            paths[i]->AddValue(last[i]);
-        }
-        else
-        {
-            paths[i]->AddValue(last[i-dim]);
-        }
+        paths[i]->AddValue(last[i]);
+
+        paths_antithetic[i] = new SinglePath(start_time, end_time, nb_steps);
+        paths_antithetic[i]->AddValue(last_anti[i]);
     }
 
     for (int i = 0;i < nb_steps;i++)
@@ -108,7 +102,7 @@ void BSEULERND::Simulate_Antithetic(double start_time, double end_time, size_t n
         for (int j = 0;j < dim;j++)
         {
             paths[j]->AddValue(last[j]);
-            paths[j + dim]->AddValue(last_anti[j]);
+            paths_antithetic[j]->AddValue(last_anti[j]);
         }
 
     }

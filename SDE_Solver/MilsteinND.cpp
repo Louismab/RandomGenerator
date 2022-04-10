@@ -47,6 +47,7 @@ void MilsteinND::Simulate(double start_time, double end_time, size_t nb_steps)
         //double next = last + last * ((r - 0.5 * pow(vol, 2.)) * dt + vol * dW + 0.5 * pow(vol, 2) * pow(dW, 2));
         std::vector<double> dW = gen->GenerateVector(dim);
         Eigen::VectorXd dW_M = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(dW.data(), dW.size()) * pow(dt, 0.5);
+
         Eigen::VectorXd R_M = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(r.data(), r.size());
 
         Eigen::MatrixXd B_square = B * B;
@@ -71,48 +72,48 @@ void MilsteinND::Simulate(double start_time, double end_time, size_t nb_steps)
 
 void MilsteinND::Simulate_Antithetic(double start_time, double end_time, size_t nb_steps)
 {
-    /*double dt = (end_time - start_time) / nb_steps;
+    double dt = (end_time - start_time) / nb_steps;
     Eigen::VectorXd last = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(s.data(), s.size());
     Eigen::VectorXd last_anti = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(s.data(), s.size());
 
-    paths.resize(dim * 2);
-
-    for (int i = 0;i < dim * 2;i++)
+    for (int i = 0;i < dim;i++)
     {
         paths[i] = new SinglePath(start_time, end_time, nb_steps);
-        if (i < dim)
-        {
-            paths[i]->AddValue(last[i]);
-        }
-        else
-        {
-            paths[i]->AddValue(last[i - dim]);
-        }
+        paths[i]->AddValue(last[i]);
+
+        paths_antithetic[i] = new SinglePath(start_time, end_time, nb_steps);
+        paths_antithetic[i]->AddValue(last_anti[i]);
     }
 
     for (int i = 0;i < nb_steps;i++)
     {
 
-        std::vector<double> dW = gen->GenerateVector(dim) * pow(dt, 0.5);
-        Eigen::VectorXd dW_M = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(dW.data(), dW.size());
+        std::vector<double> dW = gen->GenerateVector(dim);
+        Eigen::VectorXd dW_M = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(dW.data(), dW.size()) * pow(dt, 0.5);
+        Eigen::VectorXd R_M = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(r.data(), r.size());
         Eigen::VectorXd dW_M_anti = -dW_M;
-        std::vector<double> M = r * dt;
 
-        Eigen::VectorXd M_M = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(M.data(), M.size());
-        Eigen::VectorXd Z = M_M + (B * dW_M);
-        Eigen::VectorXd Z_anti = M_M + (B * dW_M_anti);
+        Eigen::MatrixXd B_square = B * B;
 
-        Eigen::VectorXd next = last + last.cwiseProduct(Z);
+        Eigen::VectorXd T = 0.5 * B_square.colwise().sum();
+
+        Eigen::VectorXd Z = B * dW_M;
+        Eigen::VectorXd Z_anti = B * dW_M_anti;
+
+        Eigen::VectorXd X = (R_M - T) * dt + Z + T * (dW_M.transpose() * dW_M);
+        Eigen::VectorXd X_anti = (R_M - T) * dt + Z_anti + T * (dW_M_anti.transpose() * dW_M_anti);
+
+        Eigen::VectorXd next = last + last.cwiseProduct(X);
+        Eigen::VectorXd next_anti = last_anti + last_anti.cwiseProduct(X_anti);
+
         last = next;
-
-        Eigen::VectorXd next_anti = last_anti + last_anti.cwiseProduct(Z_anti);
         last_anti = next_anti;
 
         for (int j = 0;j < dim;j++)
         {
             paths[j]->AddValue(last[j]);
-            paths[j + dim]->AddValue(last_anti[j]);
+            paths_antithetic[j]->AddValue(last_anti[j]);
         }
 
-    }*/
+    }
 }

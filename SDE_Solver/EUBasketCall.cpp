@@ -21,41 +21,44 @@ EUBasketCall::EUBasketCall(RandomProcess* _process, double _K, std::vector<doubl
 double EUBasketCall::ComputePrice(int NbSim,bool antithetic)
 {
 	double somme = 0.;
-	double last_value;
+	double last_value1;
+	double last_value2;
 	double WS_T;
+	double WS_T_anti;
+	double price;
 
-	for (int n = 0; n < NbSim; ++n)
+	v.resize(NbSim);
+	
+	if (antithetic)
 	{
-		
-		if (antithetic)
+		for (int n = 0; n < NbSim; ++n)
 		{
 			process->Simulate_Antithetic(0, T, T * 365);
-			std::vector<double> S_T = process->Get_ValueND(T, antithetic);
-			//print_vector(S_T);
-			int dim = S_T.size() / 2;
-			std::vector<double> S_T_anti(dim);
-			for (int i = 0;i < dim;i++)
-			{
-				S_T_anti[i] = (S_T[i] + S_T[i + dim]) / 2;
-			}
-			//print_vector(S_T_anti);
-			WS_T = std::inner_product(std::begin(weights), std::end(weights), std::begin(S_T_anti), 0.0);
-			//std::cout << "WS_T: " << WS_T << std::endl;
+			std::vector<double> S_T = process->Get_ValueND(T);
+			std::vector<double> S_T_anti = process->Get_ValueND_antithetic(T);
+			WS_T = std::inner_product(std::begin(weights), std::end(weights), std::begin(S_T), 0.0);
+			WS_T_anti = std::inner_product(std::begin(weights), std::end(weights), std::begin(S_T_anti), 0.0);
+			last_value1 = std::max(WS_T - K, 0.);
+			last_value2 = std::max(WS_T_anti - K, 0.);
+			somme = somme + last_value1 + last_value2;
+			v[n] = (last_value1 + last_value2) / 2;
 		}
-		else
+		price = std::exp(-r[0] * T) * (somme / (NbSim * 2));
+	}
+	else
+	{
+		for (int n = 0; n < NbSim; ++n)
 		{
 			process->Simulate(0, T, T * 365);
-			std::vector<double> S_T = process->Get_ValueND(T, antithetic);
-			//print_vector(S_T);
+			std::vector<double> S_T = process->Get_ValueND(T);
 			WS_T = std::inner_product(std::begin(weights), std::end(weights), std::begin(S_T), 0.0);
-			//std::cout << "WS_T normal: " << WS_T << std::endl;
+			last_value1 = std::max(WS_T - K, 0.);
+			somme = somme + last_value1;
+			v[n] = last_value1;
 		}
-		
-		last_value = std::max(WS_T - K, 0.);
-		somme = somme + last_value;
+		price = std::exp(-r[0] * T) * (somme / NbSim);
 	}
 
-	double price = std::exp(-r[0] * T) * (somme / NbSim); //mettre r en double
 	return price;
 
 }
@@ -69,6 +72,8 @@ double EUBasketCall::ComputePrice_ControlVariate(int NbSim)
 	double X;
 	double Y;
 	double X_prime;
+
+	v.resize(NbSim);
 
 	double E_Y = Compute_E_Y(S, weights, K, r[0], Vol, T);
 	//std::cout << "E_Y" << E_Y << std::endl;
@@ -90,6 +95,7 @@ double EUBasketCall::ComputePrice_ControlVariate(int NbSim)
 		X_prime = X - Y + E_Y;
 
 		somme = somme + X_prime;
+		v[n] = X_prime;
 	}
 
 	double price = std::exp(-r[0] * T) * (somme / NbSim);

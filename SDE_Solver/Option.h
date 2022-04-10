@@ -9,6 +9,7 @@ class Option
 		Option(RandomProcess* _process, double _K, std::vector<double> _r, double _T);
 		virtual double ComputePrice(int NbSim, bool antithetic = false) = 0;
 		virtual double ComputePrice_ControlVariate(int NbSim) = 0;
+		double calculate_variance();
 
 	protected:
 		//double s;
@@ -17,6 +18,8 @@ class Option
 		//double vol;
 		double T;
 		RandomProcess* process;
+
+		std::vector<double> v; //stock the payoffs to calculte the variance
 
 
 

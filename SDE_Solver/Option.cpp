@@ -11,8 +11,3 @@ Option::Option(RandomProcess* _process,  double _K, std::vector<double> _r,  dou
 {
 
 }
-
-double fp(double x, double p)
-{
-	return pow(x, p);
-}

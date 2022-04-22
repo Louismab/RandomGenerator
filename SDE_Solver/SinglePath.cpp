@@ -28,19 +28,27 @@ void SinglePath::AddValue(double val)
 const double SinglePath::GetValue(double time)
 {
 	size_t i = 1;
-	if (time +1< Times.size())
+	
+	if (time < Times[Times.size()-1])
 	{
-		while (Times[i] <= time)
+		//std::cout << "ok" << std::endl;
+		while (Times[i] < time)
 		{
 			i++;
 		}
+
+		//std::cout << i << std::endl;
+		//std::cout << "Times[i]:" << Times[i] << std::endl;
+		//std::cout << "time" << time << std::endl;
+		//std::cout << "condition" << (Times[i] != time) << std::endl;
+
 	}
 	else
 	{
 		i = Times.size();
 	}
 	
-	if (Times[i - 1] == time)
+	if (abs(Times[i - 1] - time)<0.00001)
 	{
 		return Values[i - 1];
 	}

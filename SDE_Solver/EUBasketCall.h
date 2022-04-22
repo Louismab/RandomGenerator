@@ -7,7 +7,7 @@ class EUBasketCall :public Option
 public:
 	EUBasketCall();
 	EUBasketCall(RandomProcess* _process, double _K, std::vector<double> _r, double _T, std::vector<double> _weights);
-	EUBasketCall(RandomProcess* _process, double _K, std::vector<double> _r, double _T, std::vector<double> _weights, std::vector<double> _S, Eigen::MatrixXd _Vol);
+	EUBasketCall(RandomProcess* _process, double _K, std::vector<double> _r, double _T, std::vector<double> _weights, std::vector<double> _S, Eigen::MatrixXd _VCV);
 
 	double ComputePrice(int NbSim, bool antithetic = false);
 	double ComputePrice_ControlVariate(int NbSim);
@@ -16,7 +16,7 @@ public:
 private:
 	std::vector<double> weights;
 	std::vector<double> S;
-	Eigen::MatrixXd Vol;
+	Eigen::MatrixXd VCV;
 };
 
 void print_vector(const std::vector<double>& v);

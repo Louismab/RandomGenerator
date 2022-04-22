@@ -44,7 +44,7 @@ void MilsteinND::Simulate(double start_time, double end_time, size_t nb_steps)
 
     for (int i = 0;i < nb_steps;i++)
     {
-        //double next = last + last * ((r - 0.5 * pow(vol, 2.)) * dt + vol * dW + 0.5 * pow(vol, 2) * pow(dW, 2));
+        //next = last + last * ( (r - 0.5 * pow(vol, 2.)) * dt + vol * dW + 0.5 * pow(vol, 2) * pow(dW, 2) );   
         std::vector<double> dW = gen->GenerateVector(dim);
         Eigen::VectorXd dW_M = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(dW.data(), dW.size()) * pow(dt, 0.5);
 
@@ -52,11 +52,11 @@ void MilsteinND::Simulate(double start_time, double end_time, size_t nb_steps)
 
         Eigen::MatrixXd B_square = B * B;
 
-        Eigen::VectorXd T = 0.5 * B_square.colwise().sum();
+        Eigen::VectorXd T = 0.5 * VCV.diagonal();
 
         Eigen::VectorXd Z = B * dW_M;
 
-        Eigen::VectorXd X = (R_M - T) * dt+ Z + T * (dW_M.transpose() * dW_M);
+        Eigen::VectorXd X = (R_M - T) * dt + Z + 0.5*(Z.cwiseProduct(Z));
 
         Eigen::VectorXd next = last + last.cwiseProduct(X);
         last = next;
@@ -95,13 +95,13 @@ void MilsteinND::Simulate_Antithetic(double start_time, double end_time, size_t 
 
         Eigen::MatrixXd B_square = B * B;
 
-        Eigen::VectorXd T = 0.5 * B_square.colwise().sum();
+        Eigen::VectorXd T = 0.5 * VCV.diagonal();
 
         Eigen::VectorXd Z = B * dW_M;
         Eigen::VectorXd Z_anti = B * dW_M_anti;
 
-        Eigen::VectorXd X = (R_M - T) * dt + Z + T * (dW_M.transpose() * dW_M);
-        Eigen::VectorXd X_anti = (R_M - T) * dt + Z_anti + T * (dW_M_anti.transpose() * dW_M_anti);
+        Eigen::VectorXd X = (R_M - T) * dt + Z + 0.5 * (Z.cwiseProduct(Z));
+        Eigen::VectorXd X_anti = (R_M - T) * dt + Z_anti + 0.5 * (Z_anti.cwiseProduct(Z_anti));
 
         Eigen::VectorXd next = last + last.cwiseProduct(X);
         Eigen::VectorXd next_anti = last_anti + last_anti.cwiseProduct(X_anti);

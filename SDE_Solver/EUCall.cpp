@@ -56,5 +56,21 @@ double EUCall::ComputePrice(int NbSim, bool antithetic)
 
 double EUCall::ComputePrice_ControlVariate(int NbSim)
 {
-	return 0.;
+	double somme = 0.;
+	double last_value;
+	double price;
+
+	v.resize(NbSim);
+
+	for (int n = 0; n < NbSim; ++n)
+	{
+		process->Simulate(0, T, T * 365);
+		last_value = std::max(K - process->Get_Value(T), 0.) + std::exp(r[0] * T) * process->Get_Value(0) -K;
+		somme = somme + last_value;
+		v[n] = last_value;
+	}
+
+	price = std::exp(-r[0] * T) * (somme / NbSim); //+ process->Get_Value(0) - std::exp(-r[0] * T) * K
+
+	return price;
 }

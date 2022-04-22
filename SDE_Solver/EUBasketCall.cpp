@@ -13,8 +13,8 @@ EUBasketCall::EUBasketCall(RandomProcess* _process, double _K, std::vector<doubl
 {
 
 }
-EUBasketCall::EUBasketCall(RandomProcess* _process, double _K, std::vector<double> _r, double _T, std::vector<double> _weights, std::vector<double> _S, Eigen::MatrixXd _Vol)
-	: Option(_process, _K, _r, _T), weights(_weights), S(_S), Vol(_Vol)
+EUBasketCall::EUBasketCall(RandomProcess* _process, double _K, std::vector<double> _r, double _T, std::vector<double> _weights, std::vector<double> _S, Eigen::MatrixXd _VCV)
+	: Option(_process, _K, _r, _T), weights(_weights), S(_S), VCV(_VCV)
 {
 }
 
@@ -75,7 +75,7 @@ double EUBasketCall::ComputePrice_ControlVariate(int NbSim)
 
 	v.resize(NbSim);
 
-	double E_Y = Compute_E_Y(S, weights, K, r[0], Vol, T);
+	double E_Y = Compute_E_Y(S, weights, K, r[0], VCV, T);
 	//std::cout << "E_Y" << E_Y << std::endl;
 	
 	for (int n = 0; n < NbSim; ++n)
@@ -111,7 +111,7 @@ void print_vector(const std::vector<double>& v)
 	std::cout << std::endl;
 }
 
-double Compute_E_Y(std::vector<double> S, std::vector<double> weights, double K, double r, Eigen::MatrixXd Vol, double T)
+double Compute_E_Y(std::vector<double> S, std::vector<double> weights, double K, double r, Eigen::MatrixXd VCV, double T)
 {
 	
 	double S_Y=1;
@@ -121,9 +121,9 @@ double Compute_E_Y(std::vector<double> S, std::vector<double> weights, double K,
 	Eigen::VectorXd weights_M = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(weights.data(), weights.size());
 	Eigen::MatrixXd B;
 
-	Eigen::EigenSolver<Eigen::MatrixXd> es(Vol);
+	Eigen::EigenSolver<Eigen::MatrixXd> es(VCV);
 
-	if (Vol.determinant() == 0) //if vol not definite positive
+	if (VCV.determinant() == 0) //if vol not definite positive
 	{
 		Eigen::MatrixXd D = es.pseudoEigenvalueMatrix();
 		Eigen::MatrixXd P = es.pseudoEigenvectors();
@@ -131,7 +131,7 @@ double Compute_E_Y(std::vector<double> S, std::vector<double> weights, double K,
 	}
 	else //vol is definite positive
 	{
-		B = Vol.llt().matrixL();
+		B = VCV.llt().matrixL();
 	}
 
 	for (int i = 0;i < S.size(); i++)

@@ -40,35 +40,41 @@ int main()
     VanDerCorput* Vdc = new VanDerCorput();
     NormalBoxMuller* Normal = new NormalBoxMuller(0, 1, Uniform2);
     NormalCLT* Normal_clt = new NormalCLT(0, 1, Uniform2);
+    NormalInverseCdf* Normal_VDC = new NormalInverseCdf(0, 1, Vdc);
 
     //1 dimension
     double s = 100.;
-    double vol = 0.71;
+    double vol = 0.2;
     std::vector<double> r = { 0.000 };
 
     BSEULER1D* Euler = new BSEULER1D(Normal, s, r[0], vol);
     Milstein1D* Milstein = new Milstein1D(Normal, s, r[0], vol);
+    BSEULER1D* Euler_VDC = new BSEULER1D(Normal_VDC, s, r[0], vol);
+    Milstein1D* Milstein_VDC = new Milstein1D(Normal_VDC, s, r[0], vol);
+
 
     //N dimensions
     std::vector<double> S = { 50.0, 150.0, 100.0 };
     std::vector<double> R = { 0.0, 0.0, 0.0 };
     std::vector<double> W = { 1./3, 1./3, 1./3 };
-    Eigen::MatrixXd VCV{ {0.5,0.00,0.00},{0.00,0.5,0.00},{0.00,0.00,0.5} };
+    Eigen::MatrixXd VCV{ {0.04,0,0},{0,0.04,0},{0,0,0.04} };
 
     BSEULERND* EulerND = new BSEULERND(Normal_clt, S, R, VCV, 3);
     MilsteinND* MilsteinPD = new MilsteinND(Normal_clt, S, R, VCV, 3);
+    BSEULERND* EulerND_VDC = new BSEULERND(Normal_VDC, S, R, VCV, 3);
+    MilsteinND* MilsteinPD_VDC = new MilsteinND(Normal_VDC, S, R, VCV, 3);
 
     //1 dimension
     std::vector<double> S1 = { 100 };
     std::vector<double> R1 = { 0.0 };
     std::vector<double> W1 = { 1.};
-    Eigen::MatrixXd VCV1{ {0.5} };
+    Eigen::MatrixXd VCV1{ {0.04} };
     
     
 
     double S_cf = 100.;
     double K_cf = 100.;
-    double sigma_cf = 0.71;
+    double sigma_cf = 0.2;
     double maturity_cf = 30. / 365.;
     double rate_cf = 0.00;
     double price_cf = bs_price_call(S_cf, K_cf, sigma_cf, maturity_cf, rate_cf);
@@ -77,21 +83,53 @@ int main()
     std::cout << "\n " << std::endl;
 
     std::cout << "Price Call with Euler \n " << std::endl;
-    EUCall* CallEuler = new EUCall(Euler, 100, r, 30. / 365.);
-    std::cout << "Price Call Euler: " << CallEuler->ComputePrice(100000) << std::endl;
+    EUCall* CallEuler = new EUCall(Euler, 100, r, 30./365.);
+    std::cout << "Price Call Euler: " << CallEuler->ComputePrice(10000) << std::endl;
     std::cout << " (variance : " << CallEuler->calculate_variance() << ")" << std::endl;
-    std::cout << "Price Call Euler antithetic: " << CallEuler->ComputePrice(100000,true) << std::endl;
+    std::cout << "Price Call Euler antithetic: " << CallEuler->ComputePrice(10000,true) << std::endl;
     std::cout << " (variance : " << CallEuler->calculate_variance() << ")" << std::endl;
+    std::cout << "Price Call Euler Control Variate: " << CallEuler->ComputePrice_ControlVariate(1000) << std::endl;
+    std::cout << " (variance : " << CallEuler->calculate_variance() << ")" << std::endl;
+    
+    /*std::cout << "Price Call with Euler Van Der Corput \n " << std::endl;
+    for (int i=0;i < 10;i++)
+    {
+        Euler_VDC->Simulate(0, 30. / 365., 30);
+        double last_value=Euler_VDC->Get_Value(30. / 365.);
+        std::cout << "last value :" << last_value << std::endl;
+    }*/
+
+    /*EUCall* CallEuler_VDC = new EUCall(Euler_VDC, 100, r, 30. / 365.);
+    std::cout << "Mean Normal_VDC= " << Normal_VDC->Mean(10000) << std::endl;
+    std::cout << "Variance Normal_VDC= " << Normal_VDC->Variance(10000) << std::endl;
+    std::cout << "Price Call Euler VDC: " << CallEuler_VDC->ComputePrice(100000) << std::endl;
+    std::cout << " (variance : " << CallEuler_VDC->calculate_variance() << ")" << std::endl;
+    std::cout << "Price Call Euler antithetic VDC: " << CallEuler_VDC->ComputePrice(100000, true) << std::endl;
+    std::cout << " (variance : " << CallEuler_VDC->calculate_variance() << ")" << std::endl;*/
+
 
 
     std::cout << "\n " << std::endl;
 
     std::cout << "Price Call with Milstein : \n " << std::endl;
     Milstein->Simulate(0, 30. / 365., 30);
-    EUCall* CallMilstein = new EUCall(Milstein, 100, r, 30./365.);
-    std::cout << "Price Call Miltsein : " << CallMilstein->ComputePrice(100000) << std::endl;
+    EUCall* CallMilstein = new EUCall(Milstein, 100, r, 30. / 365.);
+    std::cout << "Price Call Miltsein : " << CallMilstein->ComputePrice(10000) << std::endl;
     std::cout << " (variance : " << CallMilstein->calculate_variance() << ")" << std::endl;
-    std::cout << "Price Call Miltsein antithetic : " << CallMilstein->ComputePrice(100000,true) << std::endl;
+    std::cout << "Price Call Miltsein antithetic : " << CallMilstein->ComputePrice(10000,true) << std::endl;
+    std::cout << " (variance : " << CallMilstein->calculate_variance() << ")" << std::endl;
+    std::cout << "Price Call Miltsein Control Variate: " << CallMilstein->ComputePrice_ControlVariate(1000) << std::endl;
+    std::cout << " (variance : " << CallMilstein->calculate_variance() << ")" << std::endl;
+
+    std::cout << "\n " << std::endl;
+
+    std::cout << "Price Call with Milstein : Van Der Corput \n " << std::endl;
+    EUCall* CallMilstein_VDC = new EUCall(Milstein_VDC, 100, r, 30. / 365.);
+    std::cout << "Price Call Miltsein VDC : " << CallMilstein_VDC->ComputePrice(10000) << std::endl;
+    std::cout << " (variance : " << CallMilstein->calculate_variance() << ")" << std::endl;
+    std::cout << "Price Call Miltsein antithetic VDC : " << CallMilstein_VDC->ComputePrice(10000, true) << std::endl;
+    std::cout << " (variance : " << CallMilstein->calculate_variance() << ")" << std::endl;
+    std::cout << "Price Call Miltsein Control Variate VDC : " << CallMilstein_VDC->ComputePrice_ControlVariate(1000) << std::endl;
     std::cout << " (variance : " << CallMilstein->calculate_variance() << ")" << std::endl;
 
     // ---------------------------------------------------------------------
@@ -112,7 +150,7 @@ int main()
     std::cout << " (variance : " << BasketCallEuler->calculate_variance() << ")" << std::endl;
     std::cout << "Price Antithetic : " << BasketCallEuler->ComputePrice(10000, true) << std::endl;
     std::cout << " (variance : " << BasketCallEuler->calculate_variance() << ")" << std::endl;
-    std::cout << "Price Control Variate : " << BasketCallEuler->ComputePrice_ControlVariate(1000) << std::endl;
+    std::cout << "Price Control Variate : " << BasketCallEuler->ComputePrice_ControlVariate(10000) << std::endl;
     std::cout << " (variance : " << BasketCallEuler->calculate_variance() << ")" << std::endl;
 
     std::cout << "\n " << std::endl;
@@ -124,7 +162,7 @@ int main()
     std::cout << " (variance : " << BasketCallMilstein->calculate_variance() << ")" << std::endl;
     std::cout << "Price Antithetic : " << BasketCallMilstein->ComputePrice(10000, true) << std::endl;
     std::cout << " (variance : " << BasketCallMilstein->calculate_variance() << ")" << std::endl;
-    std::cout << "Test ComputePrice_ControlVariate : " << BasketCallMilstein->ComputePrice_ControlVariate(1000) << std::endl;
+    std::cout << "Test ComputePrice_ControlVariate : " << BasketCallMilstein->ComputePrice_ControlVariate(10000) << std::endl;
     std::cout << " (variance : " << BasketCallMilstein->calculate_variance() << ")" << std::endl;
 
     std::cout << "\n " << std::endl;
@@ -141,14 +179,20 @@ int main()
 
     std::cout << "\n " << std::endl;
 
-    /*std::cout << "Bermudan Call" << std::endl;
+    std::cout << "Bermudan Call" << std::endl;
     std::vector<double> c = {5./365., 15. / 365.,30. / 365. };
-    BermudanCall* Bermudan = new BermudanCall(Euler, 100, r, 30. / 365.,c);
-    std::cout << "Price Bermudan Call: " << Bermudan->ComputePrice(100000) << std::endl; 
+    BermudanCall* Bermudan_Euler = new BermudanCall(Euler, 100, r, 30. / 365.,c);
+    std::cout << "Price Bermudan Call Euler: " << Bermudan_Euler->ComputePrice(100000) << std::endl;
+    BermudanCall* Bermudan_Milstein = new BermudanCall(Milstein, 100, r, 30. / 365., c);
+    std::cout << "Price Bermudan Call Milstein: " << Bermudan_Milstein->ComputePrice(100000) << std::endl;
 
     std::cout << "Bermudan Basket Call" << std::endl;
-    BermudanBasketCall* BermudanBasket = new BermudanBasketCall(MilsteinPD, 100, R, 30. / 365., W, c);
-    std::cout << "Price Bermudan Call: " << BermudanBasket->ComputePrice(1000) << std::endl;*/
+    BermudanBasketCall* BermudanBasket_Euler = new BermudanBasketCall(EulerND, 100, R, 30. / 365., W, c);
+    std::cout << "Price Bermudan Basket Call Euler: " << BermudanBasket_Euler->ComputePrice(100000) << std::endl;
+    BermudanBasketCall* BermudanBasket_Milstein = new BermudanBasketCall(MilsteinPD, 100, R, 30. / 365., W, c);
+    std::cout << "Price Bermudan Basket Call Milstein: " << BermudanBasket_Milstein->ComputePrice(100000) << std::endl;
+
+
 
 }
 

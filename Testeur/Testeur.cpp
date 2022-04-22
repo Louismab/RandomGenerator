@@ -21,66 +21,118 @@
 #include "BSEULERND.h"
 #include <numeric>
 #include "EUBasketCall.h"
+#include "VanDerCorput.h"
+#include <math.h>
+#include <cmath>
+#include "BS_ClosedForm.h"
+#include "NormalInverseCdf.h"
+#include "MilsteinND.h"
+#include "BermudanCall.h"
+#include "BermudanBasketCall.h"
 
-///HELLO adam stp marche
-
-// HELLO BIS TRES ZZZ
 
 int main()
 {
     RandomGenerator* Generator;
     LinearCongruential* Uniform = new LinearCongruential(27, 17, 43, 100);
     EcuyerCombined* Uniform2 = new EcuyerCombined();
+    VanDerCorput* Vdc = new VanDerCorput();
     NormalBoxMuller* Normal = new NormalBoxMuller(0, 1, Uniform2);
-    Generator = new NormalCLT(0, 1, Uniform2);
+    NormalCLT* Normal_clt = new NormalCLT(0, 1, Uniform2);
 
-    //SDE Solver
+    //1 dimension
     double s = 100.;
-    double vol = 0.1;
-    std::vector<double> r = { 0.0001 };
+    double vol = 0.7;
+    std::vector<double> r = { 0.000 };
 
     BSEULER1D* Euler = new BSEULER1D(Normal, s, r[0], vol);
-
     Milstein1D* Milstein = new Milstein1D(Normal, s, r[0], vol);
-    //Milstein->Simulate(0, 10, 10);
-
-    //std::cout << "Pricing Call " << std::endl;
-    ////EUCall* call = new EUCall(Milstein, 100, r, 10);
-    //std::cout << "Price Call : " << call->ComputePrice(1000) << std::endl;
 
     //N dimensions
-    std::cout << "3 dimensions: " << std::endl;
-    std::vector<double> S = { 100.0, 50.0, 60.0 };
+    std::vector<double> S = { 50.0, 150.0, 100.0 };
     std::vector<double> R = { 0.0, 0.0, 0.0 };
     std::vector<double> W = { 1./3, 1./3, 1./3 };
+    Eigen::MatrixXd VCV{ {0.5,0.00,0.00},{0.00,0.5,0.00},{0.00,0.00,0.5} };
 
-    //Eigen::MatrixXd Vol{ {0.05,0.003,0.002},{0.003,0.07,0.001},{0.002,0.001,0.08} };
-    Eigen::MatrixXd Vol{ {0.05,0.00,0.00},{0.00,0.07,0.00},{0.00,0.00,0.08} };
+    BSEULERND* EulerND = new BSEULERND(Normal_clt, S, R, VCV, 3);
+    MilsteinND* MilsteinPD = new MilsteinND(Normal_clt, S, R, VCV, 3);
 
-    BSEULERND* EulerND = new BSEULERND(Generator, S, R, Vol, 3);
-    EulerND->Simulate(0, 30.0 / 365.0, 30);
-    std::cout << "Final Value : " << std::endl;
-    for (int i = 0; i < 3; i++)
-    {
-        std::cout << i << ": " << EulerND->Get_Value(30.0 / 365.0, i) << std::endl;
-    }
+    //1 dimension
+    std::vector<double> S1 = { 100 };
+    std::vector<double> R1 = { 0.0 };
+    std::vector<double> W1 = { 1.};
+    Eigen::MatrixXd VCV1{ {0.5} };
+    
+    
 
-    std::cout << "Pricing Basket Call" << std::endl;
-    EUBasketCall* BasketCall = new EUBasketCall(EulerND, 70, R, 30.0 / 365.0,W);
-    std::cout << "Price Basket Call : " << BasketCall->ComputePrice(1000) << std::endl;
+    double S_cf = 100.;
+    double K_cf = 100.;
+    double sigma_cf = 0.7;
+    double maturity_cf = 30. / 365.;
+    double rate_cf = 0.00;
+    double price_cf = bs_price_call(S_cf, K_cf, sigma_cf, maturity_cf, rate_cf);
+    std::cout << "Price BS closed form = " << price_cf << std::endl;
 
-    Milstein = new Milstein1D(Normal, 100, r[0], 0.05);
-    EUCall* call = new EUCall(Milstein, 100, r, 30.0 / 365.0);
-    //std::cout << "ok" << std::endl;
-    std::cout << "Price Call 1 : " << call->ComputePrice(1000) << std::endl;
+    std::cout << "\n " << std::endl;
 
-    Milstein = new Milstein1D(Normal, 50, r[0], 0.07);
-    call = new EUCall(Milstein, 50, r, 30.0 / 365.0);
-    std::cout << "Price Call 2 : " << call->ComputePrice(1000) << std::endl;
+    std::cout << "Price Call with Euler \n " << std::endl;
+    EUCall* CallEuler = new EUCall(Euler, 100, r, 30. / 365.);
+    std::cout << "Price Call Euler: " << CallEuler->ComputePrice(100000) << std::endl;
 
-    Milstein = new Milstein1D(Normal, 60, r[0], 0.08);
-    call = new EUCall(Milstein, 60, r, 30.0 / 365.0);
-    std::cout << "Price Call 3 : " << call->ComputePrice(1000) << std::endl;
+    std::cout << "\n " << std::endl;
+
+    std::cout << "Price Call with Milstein : \n " << std::endl;
+    Milstein->Simulate(0, 30. / 365., 30);
+    EUCall* CallMilstein = new EUCall(Milstein, 100, r, 30./365.);
+    std::cout << "Price Call Miltsein : " << CallMilstein->ComputePrice(10000) << std::endl;
+
+    // ---------------------------------------------------------------------
+
+    EUBasketCall* BasketCallEuler = new EUBasketCall(EulerND, 100, R, 30.0 / 365.0, W, S, VCV);
+    EUBasketCall* BasketCallMilstein = new EUBasketCall(MilsteinPD, 100, R, 30.0 / 365.0, W, S, VCV);
+
+    BSEULERND* Euler1stock = new BSEULERND(Normal_clt, S1, R1, VCV1, 1);
+    EUBasketCall* BasketCallEuler1stock = new EUBasketCall(Euler1stock, 100, R1, 30.0 / 365.0, W1, S1, VCV1);
+
+    MilsteinND* Milstein1stock = new MilsteinND(Normal_clt, S1, R1, VCV1, 1);
+    EUBasketCall* BasketCallMilstein1stock = new EUBasketCall(Milstein1stock, 100, R1, 30.0 / 365.0, W1, S1, VCV1);
+
+    std::cout << "Price Basket Call with EulerND : \n" << std::endl;
+    std::cout << "Price regular : " << BasketCallEuler->ComputePrice(1000) << std::endl;
+    std::cout << "Price Antithetic : " << BasketCallEuler->ComputePrice(1000, true) << std::endl;
+    std::cout << "Price Control Variate : " << BasketCallEuler->ComputePrice_ControlVariate(1000) << std::endl;
+
+    std::cout << "\n " << std::endl;
+
+    //----------------------------------------------------------
+
+    std::cout << "Price Basket with MilsteinND : \n" << std::endl;
+    std::cout << "Price regular : " << BasketCallMilstein->ComputePrice(1000) << std::endl;
+    //std::cout << "Price Antithetic : " << BasketCallMilstein->ComputePrice(1000, true) << std::endl;
+    std::cout << "Test ComputePrice_ControlVariate : " << BasketCallMilstein->ComputePrice_ControlVariate(1000) << std::endl;
+
+    std::cout << "\n " << std::endl;
+
+    /*std::cout << "Price with Euler Basket 1 stock : \n" << std::endl;
+    std::cout << "Price regular : " << BasketCallEuler1stock->ComputePrice(10000) << std::endl;
+    std::cout << "Price Antithetic : " << BasketCallEuler1stock->ComputePrice(10000, true) << std::endl;
+    std::cout << "Price Control Variate : " << BasketCallEuler1stock->ComputePrice_ControlVariate(1000) << std::endl;
+
+    std::cout << "Price with Milstein Basket 1 stock :\n" << std::endl;
+    std::cout << "Price regular : " << BasketCallMilstein1stock->ComputePrice(10000) << std::endl;
+    //std::cout << "Price Antithetic : " << BasketCallMilstein1stock->ComputePrice(1000, true) << std::endl;
+    std::cout << "Price Control Variate : " << BasketCallMilstein1stock->ComputePrice_ControlVariate(10000) << std::endl;*/
+
+    std::cout << "\n " << std::endl;
+
+    std::cout << "Bermudan Call" << std::endl;
+    std::vector<double> c = {5./365., 15. / 365.,30. / 365. };
+    BermudanCall* Bermudan = new BermudanCall(Euler, 100, r, 30. / 365.,c);
+    std::cout << "Price Bermudan Call: " << Bermudan->ComputePrice(100000) << std::endl; 
+
+    std::cout << "Bermudan Basket Call" << std::endl;
+    BermudanBasketCall* BermudanBasket = new BermudanBasketCall(MilsteinPD, 100, R, 30. / 365., W, c);
+    std::cout << "Price Bermudan Call: " << BermudanBasket->ComputePrice(1000) << std::endl;
 
 }
 
@@ -216,3 +268,51 @@ int main()
 
     //double x;
     //std::cin >> x;
+
+    /*Milstein = new Milstein1D(Normal, 100, r[0], 0.05);
+    EUCall* call = new EUCall(Milstein, 100, r, 30.0 / 365.0);
+    //std::cout << "ok" << std::endl;
+    std::cout << "Price Call 1 : " << call->ComputePrice(1000) << std::endl;
+
+    Milstein = new Milstein1D(Normal, 50, r[0], 0.07);
+    call = new EUCall(Milstein, 50, r, 30.0 / 365.0);
+    std::cout << "Price Call 2 : " << call->ComputePrice(1000) << std::endl;
+
+    Milstein = new Milstein1D(Normal, 60, r[0], 0.08);
+    call = new EUCall(Milstein, 60, r, 30.0 / 365.0);
+    std::cout << "Price Call 3 : " << call->ComputePrice(1000) << std::endl;
+
+    std::cout << "Test Van der Corput" << std::endl;
+    NormalInverseCdf* Normal2 = new NormalInverseCdf(0, 1, Vdc);
+    std::cout << "Mean= " << Normal2->Mean(10000) << std::endl;
+    std::cout << "Variance= " << Normal2->Variance(10000) << std::endl;
+    */
+
+    /*std::cout << "test antithetic" << std::endl;
+    EulerND->Simulate_Antithetic(0, 30.0 / 365.0, 30);
+    std::cout << "Final Value : " << std::endl;
+    for (int i = 0; i < 6; i++)
+    {
+        std::cout << i << ": " << EulerND->Get_Value(30.0 / 365.0, i) << std::endl;
+    }
+
+    /*std::cout << "Test EulerND \n" << std::endl;
+    EulerND->Simulate(0, 30.0 / 365.0, 30);
+    std::cout << "Final Value Test EulerND : " << std::endl;
+    for (int i = 0; i < 3; i++)
+    {
+        std::cout << i << ": " << EulerND->Get_Value(30.0 / 365.0, i) << std::endl;
+    }
+
+    std::cout << "\n " << std::endl;
+
+    std::cout << "Test MilsteinND \n" << std::endl;
+    MilsteinPD->Simulate(0, 30.0 / 365.0, 30);
+    std::cout << "Final Value Test MilsteinND: " << std::endl;
+    for (int i = 0; i < 3; i++)
+    {
+        std::cout << i << ": " << MilsteinPD->Get_Value(30.0 / 365.0, i) << std::endl;
+    }
+
+    std::cout << "\n " << std::endl; */
+    

@@ -182,18 +182,38 @@ int main()
     std::cout << "Bermudan Call" << std::endl;
     std::vector<double> c = {5./365., 15. / 365.,30. / 365. };
     BermudanCall* Bermudan_Euler = new BermudanCall(Euler, 100, r, 30. / 365.,c);
-    std::cout << "Price Bermudan Call Euler: " << Bermudan_Euler->ComputePrice(100000) << std::endl;
+    std::cout << "Price Bermudan Call Euler: " << Bermudan_Euler->ComputePrice(10000) << std::endl;
+    std::cout << " (variance : " << Bermudan_Euler->calculate_variance() << ")" << std::endl;
+    std::cout << "Price Bermudan Call Euler antithetic: " << Bermudan_Euler->ComputePrice(10000,true) << std::endl;
+    std::cout << " (variance : " << Bermudan_Euler->calculate_variance() << ")" << std::endl;
+    std::cout << "Price Bermudan Call Euler PCV: " << Bermudan_Euler->ComputePrice_ControlVariate(10000) << std::endl;
+    std::cout << " (variance : " << Bermudan_Euler->calculate_variance() << ")" << std::endl;
+
     BermudanCall* Bermudan_Milstein = new BermudanCall(Milstein, 100, r, 30. / 365., c);
-    std::cout << "Price Bermudan Call Milstein: " << Bermudan_Milstein->ComputePrice(100000) << std::endl;
+    std::cout << "Price Bermudan Call Milstein: " << Bermudan_Milstein->ComputePrice(10000) << std::endl;
+    std::cout << " (variance : " << Bermudan_Milstein->calculate_variance() << ")" << std::endl;
+    std::cout << "Price Bermudan Call Milstein antithetic: " << Bermudan_Milstein->ComputePrice(10000,true) << std::endl;
+    std::cout << " (variance : " << Bermudan_Milstein->calculate_variance() << ")" << std::endl;
+    std::cout << "Price Bermudan Call Euler PCV: " << Bermudan_Milstein->ComputePrice_ControlVariate(10000) << std::endl;
+    std::cout << " (variance : " << Bermudan_Milstein->calculate_variance() << ")" << std::endl;
 
     std::cout << "Bermudan Basket Call" << std::endl;
     BermudanBasketCall* BermudanBasket_Euler = new BermudanBasketCall(EulerND, 100, R, 30. / 365., W, c);
-    std::cout << "Price Bermudan Basket Call Euler: " << BermudanBasket_Euler->ComputePrice(100000) << std::endl;
+    std::cout << "Price Bermudan Basket Call Euler: " << BermudanBasket_Euler->ComputePrice(10000) << std::endl;
+    std::cout << " (variance : " << BermudanBasket_Euler->calculate_variance() << ")" << std::endl;
+    std::cout << "Price Bermudan Basket Call Euler antithetic: " << BermudanBasket_Euler->ComputePrice(10000,true) << std::endl;
+    std::cout << " (variance : " << BermudanBasket_Euler->calculate_variance() << ")" << std::endl;
+    std::cout << "Price Bermudan Basket Call Euler PCV: " << BermudanBasket_Euler->ComputePrice_ControlVariate(10000) << std::endl;
+    std::cout << " (variance : " << BermudanBasket_Euler->calculate_variance() << ")" << std::endl;
+    
+    
     BermudanBasketCall* BermudanBasket_Milstein = new BermudanBasketCall(MilsteinPD, 100, R, 30. / 365., W, c);
-    std::cout << "Price Bermudan Basket Call Milstein: " << BermudanBasket_Milstein->ComputePrice(100000) << std::endl;
-
-
-
+    std::cout << "Price Bermudan Basket Call Milstein: " << BermudanBasket_Milstein->ComputePrice(10000) << std::endl;
+    std::cout << " (variance : " << BermudanBasket_Milstein->calculate_variance() << ")" << std::endl;
+    std::cout << "Price Bermudan Basket Call Milstein antithetic: " << BermudanBasket_Milstein->ComputePrice(10000,true) << std::endl;
+    std::cout << " (variance : " << BermudanBasket_Milstein->calculate_variance() << ")" << std::endl;
+    std::cout << "Price Bermudan Basket Call Milstein PCV: " << BermudanBasket_Milstein->ComputePrice_ControlVariate(10000) << std::endl;
+    std::cout << " (variance : " << BermudanBasket_Milstein->calculate_variance() << ")" << std::endl;
 }
 
 // Exécuter le programme : Ctrl+F5 ou menu Déboguer > Exécuter sans débogage

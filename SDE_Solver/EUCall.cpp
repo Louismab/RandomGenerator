@@ -17,19 +17,44 @@ EUCall::EUCall(RandomProcess* _process,  double _K, std::vector<double> _r,  dou
 
 }
 
-double EUCall::ComputePrice(int NbSim)
+double EUCall::ComputePrice(int NbSim, bool antithetic)
 {
 	double somme = 0.;
-	double last_value;
+	double last_value1;
+	double last_value2;
+	double price;
 
-	for (int n = 0; n < NbSim; ++n)
+	v.resize(NbSim);
+
+	if (antithetic)
 	{
-		process->Simulate(0, T, T*365);
-		last_value = std::max(process->Get_Value(T) - K, 0.);
-		somme = somme + last_value;
+		for (int n = 0; n < NbSim; ++n)
+		{
+			process->Simulate_Antithetic(0, T, T * 365);
+			last_value1 = std::max(process->Get_Value(T) - K, 0.);
+			last_value2 = std::max(process->Get_Value_antithetic(T) - K, 0.);
+			somme = somme + last_value1 + last_value2;
+			v[n] = (last_value1 + last_value2) / 2;
+		}
+		price = std::exp(-r[0] * T) * (somme / (NbSim * 2));
 	}
-
-	double price = std::exp(-r[0] * T) * (somme / NbSim);
+	else
+	{
+		for (int n = 0; n < NbSim; ++n)
+		{
+			process->Simulate(0, T, T * 365);
+			last_value1 = std::max(process->Get_Value(T) - K, 0.);
+			somme = somme + last_value1;
+			v[n] = last_value1;
+		}
+		price = std::exp(-r[0] * T) * (somme / NbSim);
+	}
+	
 	return price;
 
+}
+
+double EUCall::ComputePrice_ControlVariate(int NbSim)
+{
+	return 0.;
 }

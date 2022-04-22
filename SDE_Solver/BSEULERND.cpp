@@ -3,7 +3,6 @@
 #include <math.h> 
 
 
-
 using namespace Eigen;
 
 
@@ -11,13 +10,13 @@ BSEULERND::BSEULERND()
 {
 }
 
-BSEULERND::BSEULERND(RandomGenerator* _gen, std::vector<double> _s, std::vector<double> _r, Eigen::MatrixXd _vol, int dim)
-	: BSND(_gen, _s, _r, _vol, dim)
+BSEULERND::BSEULERND(RandomGenerator* _gen, std::vector<double> _s, std::vector<double> _r, Eigen::MatrixXd _VCV, int dim)
+	: BSND(_gen, _s, _r, _VCV, dim)
 {
     
-    EigenSolver<MatrixXd> es(vol);
+    EigenSolver<MatrixXd> es(VCV);
 
-    if (vol.determinant() == 0) //if vol not definite positive
+    if (VCV.determinant() == 0) //if vol not definite positive
     {
         MatrixXd D = es.pseudoEigenvalueMatrix();
         MatrixXd P = es.pseudoEigenvectors();
@@ -26,7 +25,7 @@ BSEULERND::BSEULERND(RandomGenerator* _gen, std::vector<double> _s, std::vector<
 
     else //vol is definite positive
     {
-        B = vol.llt().matrixL(); 
+        B = VCV.llt().matrixL();
     }
     
 }
@@ -41,7 +40,6 @@ void BSEULERND::Simulate(double start_time, double end_time, size_t nb_steps)
         paths[i]= new SinglePath(start_time, end_time, nb_steps);
         paths[i]->AddValue(last[i]);
     }
-
 
     for (int i = 0;i < nb_steps;i++)
     {
@@ -67,6 +65,49 @@ void BSEULERND::Simulate(double start_time, double end_time, size_t nb_steps)
 
     } 
 }
+
+void BSEULERND::Simulate_Antithetic(double start_time, double end_time, size_t nb_steps)
+{
+    double dt = (end_time - start_time) / nb_steps;
+    Eigen::VectorXd last = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(s.data(), s.size());
+    Eigen::VectorXd last_anti = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(s.data(), s.size());
+
+    for (int i = 0;i < dim;i++)
+    {
+        paths[i] = new SinglePath(start_time, end_time, nb_steps);
+        paths[i]->AddValue(last[i]);
+
+        paths_antithetic[i] = new SinglePath(start_time, end_time, nb_steps);
+        paths_antithetic[i]->AddValue(last_anti[i]);
+    }
+
+    for (int i = 0;i < nb_steps;i++)
+    {
+
+        std::vector<double> dW = gen->GenerateVector(dim) * pow(dt, 0.5);
+        Eigen::VectorXd dW_M = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(dW.data(), dW.size());
+        Eigen::VectorXd dW_M_anti = -dW_M;
+        std::vector<double> M = r * dt;
+
+        Eigen::VectorXd M_M = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(M.data(), M.size());
+        Eigen::VectorXd Z = M_M + (B * dW_M);
+        Eigen::VectorXd Z_anti = M_M + (B * dW_M_anti);
+
+        Eigen::VectorXd next = last + last.cwiseProduct(Z);
+        last = next;
+
+        Eigen::VectorXd next_anti = last_anti + last_anti.cwiseProduct(Z_anti);
+        last_anti = next_anti;
+
+        for (int j = 0;j < dim;j++)
+        {
+            paths[j]->AddValue(last[j]);
+            paths_antithetic[j]->AddValue(last_anti[j]);
+        }
+
+    }
+}
+
 
 /*int BSEULERND::get_dim()
 {

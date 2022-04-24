@@ -31,16 +31,10 @@ const double SinglePath::GetValue(double time)
 	
 	if (time < Times[Times.size()-1])
 	{
-		//std::cout << "ok" << std::endl;
 		while (Times[i] < time)
 		{
 			i++;
 		}
-
-		//std::cout << i << std::endl;
-		//std::cout << "Times[i]:" << Times[i] << std::endl;
-		//std::cout << "time" << time << std::endl;
-		//std::cout << "condition" << (Times[i] != time) << std::endl;
 
 	}
 	else

@@ -27,6 +27,7 @@ double EUBasketCall::ComputePrice(int NbSim,bool antithetic)
 	double WS_T_anti;
 	double price;
 
+	v.clear();
 	v.resize(NbSim);
 	
 	if (antithetic)
@@ -73,6 +74,7 @@ double EUBasketCall::ComputePrice_ControlVariate(int NbSim)
 	double Y;
 	double X_prime;
 
+	v.clear();
 	v.resize(NbSim);
 
 	double E_Y = Compute_E_Y(S, weights, K, r[0], VCV, T);

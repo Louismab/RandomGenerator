@@ -26,6 +26,7 @@ double BermudanCall::ComputePrice(int NbSim, bool antithetic)
 	double last_value;
 	double price;
 
+	v.clear();
 	v.resize(NbSim);
 
 	if (antithetic)
@@ -238,6 +239,7 @@ double BermudanCall::ComputePrice_ControlVariate(int NbSim)
 	double last_value;
 	double price;
 
+	v.clear();
 	v.resize(NbSim);
 
 	for (int n = 0; n < NbSim; ++n)

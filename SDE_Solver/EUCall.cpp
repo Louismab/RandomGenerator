@@ -24,6 +24,7 @@ double EUCall::ComputePrice(int NbSim, bool antithetic)
 	double last_value2;
 	double price;
 
+	v.clear();
 	v.resize(NbSim);
 
 	if (antithetic)
@@ -60,6 +61,7 @@ double EUCall::ComputePrice_ControlVariate(int NbSim)
 	double last_value;
 	double price;
 
+	v.clear();
 	v.resize(NbSim);
 
 	for (int n = 0; n < NbSim; ++n)

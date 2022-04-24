@@ -13,7 +13,7 @@ BermudanBasketCall::BermudanBasketCall(RandomProcess* _process, double _K, std::
 {
 }
 
-BermudanBasketCall::BermudanBasketCall(RandomProcess* _process, double _K, std::vector<double> _r, double _T, std::vector<double> _weights, std::vector<double> _exeDates, int _L, std::vector<double> _S, Eigen::MatrixXd _VCV)
+BermudanBasketCall::BermudanBasketCall(RandomProcess* _process, double _K, std::vector<double> _r, double _T, std::vector<double> _weights, std::vector<double> _exeDates,  std::vector<double> _S, Eigen::MatrixXd _VCV, int _L)
 	: Option(_process, _K, _r, _T), exeDates(_exeDates), L(_L), weights(_weights), S(_S), VCV(_VCV)
 {
 }
@@ -34,6 +34,7 @@ double BermudanBasketCall::ComputePrice(int NbSim, bool antithetic)
 	double last_value;
 	double price;
 
+	v.clear();
 	v.resize(NbSim);
 
 	if (antithetic)
@@ -250,8 +251,10 @@ double BermudanBasketCall::ComputePrice_ControlVariate(int NbSim)
 	double last_value;
 	double price;
 
+	v.clear();
 	v.resize(NbSim);
 	double E_Y = Compute_E_Ybis(S, weights, K, r[0], VCV, T);
+
 
 	for (int n = 0; n < NbSim; ++n)
 	{
@@ -273,6 +276,7 @@ double BermudanBasketCall::ComputePrice_ControlVariate(int NbSim)
 		}
 	}
 
+
 	for (int k = nb_exe_dates - 2; k >= 0;k--)
 	{
 		tk = exeDates[k];
@@ -289,7 +293,6 @@ double BermudanBasketCall::ComputePrice_ControlVariate(int NbSim)
 			}
 
 			B(n, 0) = std::exp(-r[0] * (Tau(n, k + 1) - tk)) * (std::max(S_exe_M(n, j) - K, 0.)- std::max(exp(S_exe_M_L(n, j)) - K, 0.)+E_Y);
-
 
 			for (int z = 0;z < L;z++)
 			{
@@ -363,6 +366,7 @@ double Compute_E_Ybis(std::vector<double> S, std::vector<double> weights, double
 		S_Y *= pow(S[i], weights[i]);
 	}
 
+	
 	Eigen::MatrixXd sigma2 = B * B;
 	Eigen::VectorXd sigmai = sigma2.colwise().sum();
 	double R1 = 0.5 * weights_M.transpose() * sigmai;

@@ -22,8 +22,10 @@ double Option::calculate_variance()
 {
 
 	double NbSim = v.size();
-	double sum = std::accumulate(v.begin(), v.end(), 0.0);
-	double mean = sum / v.size();
+	/*double sum = std::accumulate(v.begin(), v.end(), 0.0);
+	double mean = sum / v.size();*/
+
+	double mean = calculate_mean();
 
 	/*std::vector<double> diff(v.size());
 	std::transform(v.begin(), v.end(), diff.begin(), [mean](double x) { return x - mean; });
@@ -40,6 +42,42 @@ double Option::calculate_variance()
 	}
 
 	double var = somme / NbSim;
-	v.clear();
 	return var;
+}
+
+double Option::calculate_mean()
+{
+	double NbSim = v.size();
+	double sum = std::accumulate(v.begin(), v.end(), 0.0);
+	double mean = sum / v.size();
+
+	return mean;
+}
+
+std::vector<double> Option::calculate_ConfidenceInterval(double alpha)
+{
+	std::vector<double> IC(2);
+	double q;
+	if (alpha == 0.99)
+	{
+		std::cout << "0.99" << std::endl;
+		q = 2.576;
+	}
+	else if (alpha == 0.95)
+	{
+		std::cout << "0.95" << std::endl;
+		q = 1.96;
+	}
+	else
+	{
+		std::cout << "Please choose alpha=0.99 or alpha=0.95" << std::endl;
+	}
+
+	double lb = calculate_mean() - q * (pow(calculate_variance() / v.size(), 0.5));
+	double ub = calculate_mean() + q * (pow(calculate_variance() / v.size(), 0.5));
+
+	IC[0] = lb;
+	IC[1] = ub;
+
+	return IC;
 }

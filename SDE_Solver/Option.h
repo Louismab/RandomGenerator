@@ -10,6 +10,8 @@ class Option
 		virtual double ComputePrice(int NbSim, bool antithetic = false) = 0;
 		virtual double ComputePrice_ControlVariate(int NbSim) = 0;
 		double calculate_variance();
+		double calculate_mean();
+		std::vector<double> calculate_ConfidenceInterval(double alpha = 0.99);
 
 	protected:
 		//double s;

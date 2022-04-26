@@ -36,7 +36,7 @@
 void exportVectortoXl(std::string file, std::vector<double> V)
 {
     std::ofstream myfile;
-    myfile.open(file);
+    myfile.open(file, std::ofstream::app);
 
     myLong vsize = V.size();
     for (myLong n = 0; n < vsize; n++)
@@ -100,20 +100,21 @@ int main()
     std::cout << "Price Call Euler Control Variate: " << CallEuler->ComputePrice_ControlVariate(1000) << std::endl;
     std::cout << " (variance : " << CallEuler->calculate_variance() << ")" << std::endl;
 
+    std::vector<double> IC = CallEuler->calculate_ConfidenceInterval();
+    std::cout << "lower bound : " << IC[0];
+    std::cout << "upper bound : " << IC[1];
+
     //graph call Euler
-    std::vector < double> v1;
-    v1.push_back(2);
-    v1.push_back(4);
-    exportVectortoXl("IC_graphs2.csv", v1);
-    /*for (myLong i = 0;i <= 10000/10;i ++)
+    std::vector < double> v;
+    //v1.push_back(2);
+    //v1.push_back(4);
+    //exportVectortoXl("C:\\Users\\louis\\Documents\\M2 203 cours\\Computational Finance\\IC_graphs2.csv", v1);
+    for (myLong i = 0;i <= 10000/10;i ++)
     {
         std::cout << i << std::endl;    
         v.push_back(CallEuler->ComputePrice(i*10));
     }
-    std::vector<double> IC = CallEuler->calculate_ConfidenceInterval();
-    std::cout << "lower bound : " << IC[0];
-    std::cout << "upper bound : " << IC[1];
-    exportVectortoXl("IC_graphs.xlsx", v);*/
+    exportVectortoXl("IC_graphs.csv", v);
 
     
     /*std::cout << "Price Call with Euler Van Der Corput \n " << std::endl;

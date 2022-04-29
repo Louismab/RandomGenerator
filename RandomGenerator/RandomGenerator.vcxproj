@@ -167,6 +167,7 @@
     <ClInclude Include="LinearCongruential.h" />
     <ClInclude Include="Normal.h" />
     <ClInclude Include="NormalBoxMuller.h" />
+    <ClInclude Include="NormalBoxMuller_Quasi.h" />
     <ClInclude Include="NormalCLT.h" />
     <ClInclude Include="NormalInverseCdf.h" />
     <ClInclude Include="pch.h" />
@@ -178,6 +179,7 @@
     <ClInclude Include="RandomGenerator.h" />
     <ClInclude Include="UniformGenerator.h" />
     <ClInclude Include="VanDerCorput.h" />
+    <ClInclude Include="VanDerCorputBase3.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bernoulli.cpp" />
@@ -192,6 +194,7 @@
     <ClCompile Include="LinearCongruential.cpp" />
     <ClCompile Include="Normal.cpp" />
     <ClCompile Include="NormalBoxMuller.cpp" />
+    <ClCompile Include="NormalBoxMuller_Quasi.cpp" />
     <ClCompile Include="NormalCLT.cpp" />
     <ClCompile Include="NormalInverseCdf.cpp" />
     <ClCompile Include="pch.cpp">
@@ -208,6 +211,7 @@
     <ClCompile Include="RandomGenerator.cpp" />
     <ClCompile Include="UniformGenerator.cpp" />
     <ClCompile Include="VanDerCorput.cpp" />
+    <ClCompile Include="VanDerCorputBase3.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -4,10 +4,12 @@
 class VanDerCorput : public QuasiGenerator
 {
 public:
-	VanDerCorput();
+	VanDerCorput(int _base=2);
 	virtual double Generate();
-	
+
+private:
+	int base;
 
 };
 
-std::vector<int> IntToInverseBinary(int n);
+std::vector<int> IntToInversePAdicExpansion(int n, int base);

@@ -9,6 +9,7 @@ public:
 	NormalBoxMuller(double _mean, double _var, UniformGenerator* _gen);
 	virtual double Generate();
 
+
 private:
 	bool NewSimulation = true;
 	double SecondNormal;

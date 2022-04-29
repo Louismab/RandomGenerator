@@ -31,6 +31,8 @@
 #include "BermudanBasketCall.h"
 #include <fstream>
 #include <exception>
+#include "VanDerCorputBase3.h"
+#include "NormalBoxMuller_Quasi.h"
 
 //Test adam
 void exportVectortoXl(std::string file, std::vector<double> V)
@@ -53,14 +55,40 @@ int main()
     LinearCongruential* Uniform = new LinearCongruential(27, 17, 43, 100);
     EcuyerCombined* Uniform2 = new EcuyerCombined();
     VanDerCorput* Vdc = new VanDerCorput();
+    VanDerCorput* Vdc_3 = new VanDerCorput(3);
     NormalBoxMuller* Normal = new NormalBoxMuller(0, 1, Uniform2);
     NormalCLT* Normal_clt = new NormalCLT(0, 1, Uniform2);
     NormalInverseCdf* Normal_VDC = new NormalInverseCdf(0, 1, Vdc);
+    NormalInverseCdf* Normal_Inv = new NormalInverseCdf(0, 1, Uniform2);
+    NormalBoxMuller_Quasi* Normal_VDC_3 = new NormalBoxMuller_Quasi(0, 1, Vdc, Vdc_3);
+
+    /*std::cout << "Test Van der Corput" << std::endl;
+    std::cout << "Mean= " << Vdc_3->Mean(10000) << std::endl;
+    std::cout << "Variance= " << Vdc_3->Variance(10000) << std::endl;
+
+    for (int i = 0;i < 10;++i)
+    {
+       std::cout << "Vdc base 2 : " << Vdc->Generate() << std::endl;
+       std::cout << "Vdc base 3 : " << Vdc_3->Generate() << std::endl;
+    }*/
+
+
+    std::cout << "Mean= " << Normal_VDC_3->Mean(10000) << std::endl;
+    std::cout << "Variance= " << Normal_VDC_3->Variance(10000) << std::endl;
+
+    /*std::vector < double> v1;
+    for (int i = 0;i < 10000;++i)
+    {
+        v1.push_back(Normal_VDC_3->Generate());
+    }
+    exportVectortoXl("Normal_VDC_3.csv", v1);
+    std::cout << "Mean= " << Normal_VDC_3->Mean(10000) << std::endl;
+    std::cout << "Variance= " << Normal_VDC_3->Variance(10000) << std::endl;*/
 
     //1 dimension
     double s = 100.;
     double vol = 0.2;
-    double maturity = 30. / 365.;
+    double maturity = 1.;
     double K = 100;
     std::vector<double> r = { 0.000 };
 
@@ -68,20 +96,103 @@ int main()
     //N dimensions
     std::vector<double> S = { 50.0, 150.0, 100.0 };
     std::vector<double> R = { 0.0, 0.0, 0.0 };
-    std::vector<double> W = { 1./3, 1./3, 1./3 };
-    Eigen::MatrixXd VCV{ {0.04,0,0},{0,0.04,0},{0,0,0.04} };
-    //std::vector<double> c = { 1. / 4., 1. / 2.,3. / 4.,1. };
-    std::vector<double> c = {5./365., 15. / 365.,30. / 365. };
+    std::vector<double> W = { 1. / 3, 1. / 3, 1. / 3 };
+    Eigen::MatrixXd VCV{ {0.04,0.036,0.032},{0.036,0.04,0.036},{0.032,0.036,0.04} };
+    std::vector<double> c = { 1. / 4., 1. / 2.,3. / 4.,1. };
+    //std::vector<double> c = { 5. / 365., 15. / 365.,30. / 365. };
 
     BSEULER1D* Euler = new BSEULER1D(Normal, s, r[0], vol);
     Milstein1D* Milstein = new Milstein1D(Normal, s, r[0], vol);
-    BSEULER1D* Euler_VDC = new BSEULER1D(Normal_VDC, s, r[0], vol);
-    Milstein1D* Milstein_VDC = new Milstein1D(Normal_VDC, s, r[0], vol);
+    BSEULER1D* Euler_VDC = new BSEULER1D(Normal_VDC_3, s, r[0], vol);
+    Milstein1D* Milstein_VDC = new Milstein1D(Normal_VDC_3, s, r[0], vol);
 
     BSEULERND* EulerND = new BSEULERND(Normal_clt, S, R, VCV, 3);
     MilsteinND* MilsteinPD = new MilsteinND(Normal_clt, S, R, VCV, 3);
-    BSEULERND* EulerND_VDC = new BSEULERND(Normal_VDC, S, R, VCV, 3);
-    MilsteinND* MilsteinPD_VDC = new MilsteinND(Normal_VDC, S, R, VCV, 3);
+    BSEULERND* EulerND_VDC = new BSEULERND(Normal_VDC_3, S, R, VCV, 3);
+    MilsteinND* MilsteinPD_VDC = new MilsteinND(Normal_VDC_3, S, R, VCV, 3);
+
+    /*BermudanBasketCall* BermudanBasket_Euler = new BermudanBasketCall(EulerND, K, R, maturity, W, c, S, VCV);
+    std::cout << "Price Bermudan Call Euler: \n" << std::endl;
+    std::cout << "Price regular :" << BermudanBasket_Euler->ComputePrice(10000) << std::endl;
+    std::cout << " (variance : " << BermudanBasket_Euler->calculate_variance() << ")" << std::endl;
+    std::cout << "lower bound : " << BermudanBasket_Euler->calculate_ConfidenceInterval()[0] << std::endl;
+    std::cout << "upper bound : " << BermudanBasket_Euler->calculate_ConfidenceInterval()[1] << std::endl;
+
+    std::cout << "Price antithetic : " << BermudanBasket_Euler->ComputePrice(10000, true) << std::endl;
+    std::cout << " (variance : " << BermudanBasket_Euler->calculate_variance() << ")" << std::endl;
+    std::cout << "lower bound : " << BermudanBasket_Euler->calculate_ConfidenceInterval()[0] << std::endl;
+    std::cout << "upper bound : " << BermudanBasket_Euler->calculate_ConfidenceInterval()[1] << std::endl;
+
+    std::cout << "Price Control Variate: " << BermudanBasket_Euler->ComputePrice_ControlVariate(10000) << std::endl;
+    std::cout << " (variance : " << BermudanBasket_Euler->calculate_variance() << ")" << std::endl;
+    std::cout << "lower bound : " << BermudanBasket_Euler->calculate_ConfidenceInterval()[0] << std::endl;
+    std::cout << "upper bound : " << BermudanBasket_Euler->calculate_ConfidenceInterval()[1] << std::endl;
+
+    std::cout << "\n " << std::endl;
+
+    /*BermudanBasketCall* BermudanBasket_Milstein = new BermudanBasketCall(MilsteinPD, K, R, maturity, W, c, S, VCV);
+    std::cout << "Price Bermudan Call Milstein: \n" << std::endl;
+    std::cout << "Price regular : " << BermudanBasket_Milstein->ComputePrice(10000) << std::endl;
+    std::cout << " (variance : " << BermudanBasket_Milstein->calculate_variance() << ")" << std::endl;
+    std::cout << "lower bound : " << BermudanBasket_Milstein->calculate_ConfidenceInterval()[0] << std::endl;
+    std::cout << "upper bound : " << BermudanBasket_Milstein->calculate_ConfidenceInterval()[1] << std::endl;
+
+    std::cout << "Price antithetic : " << BermudanBasket_Milstein->ComputePrice(10000, true) << std::endl;
+    std::cout << " (variance : " << BermudanBasket_Milstein->calculate_variance() << ")" << std::endl;
+    std::cout << "lower bound : " << BermudanBasket_Milstein->calculate_ConfidenceInterval()[0] << std::endl;
+    std::cout << "upper bound : " << BermudanBasket_Milstein->calculate_ConfidenceInterval()[1] << std::endl;
+
+    std::cout << "Price control variate : " << BermudanBasket_Milstein->ComputePrice_ControlVariate(10000) << std::endl;
+    std::cout << " (variance : " << BermudanBasket_Milstein->calculate_variance() << ")" << std::endl << std::endl;
+    std::cout << "lower bound : " << BermudanBasket_Milstein->calculate_ConfidenceInterval()[0] << std::endl;
+    std::cout << "upper bound : " << BermudanBasket_Milstein->calculate_ConfidenceInterval()[1] << std::endl;*/
+
+    //graph Bermudan Basket call Euler
+
+    /*std::vector < double> v_bermudan_basket_call_euler;
+    std::vector < double> v_bermudan_basket_call_euler_anti;
+    std::vector < double> v_bermudan_basket_call_euler_PCV;
+
+
+    for (myLong i = 1; i <= 10000 / 10; i++)
+    {
+        std::cout << i << std::endl;
+        v_bermudan_basket_call_euler.push_back(BermudanBasket_Euler->ComputePrice(i * 10));
+        v_bermudan_basket_call_euler_anti.push_back(BermudanBasket_Euler->ComputePrice(i * 10, true));
+        v_bermudan_basket_call_euler_PCV.push_back(BermudanBasket_Euler->ComputePrice_ControlVariate(i * 10));
+    }
+    exportVectortoXl("bermudan_euler_one_month_no_correl.csv", v_bermudan_basket_call_euler);
+    exportVectortoXl("bermudan_euler_anti_one_month_no_correl.csv", v_bermudan_basket_call_euler_anti);
+    exportVectortoXl("bermudan_euler_pcv_one_month_no_correl.csv", v_bermudan_basket_call_euler_PCV);
+
+    //graph Bermudan call Milstein
+
+    /*std::vector < double> v_bermudan_basket_call_milstein;
+    std::vector < double> v_bermudan_basket_call_milstein_anti;
+    std::vector < double> v_bermudan_basket_call_milstein_PCV;
+
+
+    for (myLong i = 1; i <= 10000 / 10; i++)
+    {
+        std::cout << i << std::endl;
+        v_bermudan_basket_call_milstein.push_back(BermudanBasket_Milstein->ComputePrice(i * 10));
+        v_bermudan_basket_call_milstein_anti.push_back(BermudanBasket_Milstein->ComputePrice(i * 10, true));
+        v_bermudan_basket_call_milstein_PCV.push_back(BermudanBasket_Milstein->ComputePrice_ControlVariate(i * 10));
+    }
+    exportVectortoXl("bermudan_milstein_one_month_no_correl.csv", v_bermudan_basket_call_milstein);
+    exportVectortoXl("bermudan_milstein_anti_one_month_no_correl.csv", v_bermudan_basket_call_milstein_anti);
+    exportVectortoXl("bermudan_milstein_pcv_one_month_no_correl.csv", v_bermudan_basket_call_milstein_PCV);*/
+
+    /*std::vector < double> v1;
+    for (int i = 0;i < 10000;++i)
+    {
+        v1.push_back(Vdc->Generate());
+    }
+    exportVectortoXl("Vdc.csv", v1);
+    std::cout << "Mean= " << Vdc->Mean(10000) << std::endl;
+    std::cout << "Variance= " << Vdc->Variance(10000) << std::endl;*/
+
+    
 
     double price_cf = bs_price_call(s, K, vol, maturity, r[0]);
     std::cout << "Price BS closed form = " << price_cf << std::endl;
@@ -104,40 +215,7 @@ int main()
     std::cout << "lower bound : " << IC[0];
     std::cout << "upper bound : " << IC[1];
 
-    //graph call Euler
-    std::vector < double> v;
-    //v1.push_back(2);
-    //v1.push_back(4);
-    //exportVectortoXl("C:\\Users\\louis\\Documents\\M2 203 cours\\Computational Finance\\IC_graphs2.csv", v1);
-    for (myLong i = 0;i <= 10000/10;i ++)
-    {
-        std::cout << i << std::endl;    
-        v.push_back(CallEuler->ComputePrice(i*10));
-    }
-    exportVectortoXl("IC_graphs.csv", v);
-
-    
-    /*std::cout << "Price Call with Euler Van Der Corput \n " << std::endl;
-    for (int i=0;i < 10;i++)
-    {
-        Euler_VDC->Simulate(0, 30. / 365., 30);
-        double last_value=Euler_VDC->Get_Value(30. / 365.);
-        std::cout << "last value :" << last_value << std::endl;
-    }*/
-
-    /*EUCall* CallEuler_VDC = new EUCall(Euler_VDC, 100, r, 30. / 365.);
-    std::cout << "Mean Normal_VDC= " << Normal_VDC->Mean(10000) << std::endl;
-    std::cout << "Variance Normal_VDC= " << Normal_VDC->Variance(10000) << std::endl;
-    std::cout << "Price Call Euler VDC: " << CallEuler_VDC->ComputePrice(100000) << std::endl;
-    std::cout << " (variance : " << CallEuler_VDC->calculate_variance() << ")" << std::endl;
-    std::cout << "Price Call Euler antithetic VDC: " << CallEuler_VDC->ComputePrice(100000, true) << std::endl;
-    std::cout << " (variance : " << CallEuler_VDC->calculate_variance() << ")" << std::endl;*/
-
-
-
-    std::cout << "\n " << std::endl;
-
-    /*std::cout << "Price Call with Milstein : \n " << std::endl;
+    std::cout << "Price Call with Milstein : \n " << std::endl;
     Milstein->Simulate(0, maturity, 30);
     EUCall* CallMilstein = new EUCall(Milstein, K, r, maturity);
     std::cout << "Price Call Miltsein : " << CallMilstein->ComputePrice(10000) << std::endl;
@@ -147,31 +225,72 @@ int main()
     std::cout << "Price Call Miltsein Control Variate: " << CallMilstein->ComputePrice_ControlVariate(1000) << std::endl;
     std::cout << " (variance : " << CallMilstein->calculate_variance() << ")" << std::endl;
 
+    /*Euler_VDC->Simulate(0, 1, 365);
+    double FinalValue= Euler_VDC->Get_Value(1);
+    std::cout << "Final Value" << FinalValue << std::endl;
+    for (double i = 0;i < 365;i++)
+    {
+        std::cout << i << ": " << Euler_VDC->Get_Value(1./365*i) << std::endl;
+    }*/
+
+    
+    std::cout << "Price Call with Euler Van Der Corput \n " << std::endl;
+    /*for (int i = 0;i < 10;i++)
+    {
+        Euler_VDC->Simulate(0, 30. / 365., 30);
+        double last_value=Euler_VDC->Get_Value(30. / 365.);
+        std::cout << "last value :" << last_value << std::endl;
+    }*/
+
+    EUCall* CallEuler_VDC = new EUCall(Euler_VDC, 100, r, maturity);
+    std::cout << "Price Call Euler VDC: " << CallEuler_VDC->ComputePrice(10000) << std::endl;
+    std::cout << " (variance : " << CallEuler_VDC->calculate_variance() << ")" << std::endl;
+    std::cout << "Price Call Euler antithetic VDC: " << CallEuler_VDC->ComputePrice(1000, true) << std::endl;
+    std::cout << " (variance : " << CallEuler_VDC->calculate_variance() << ")" << std::endl;
+
+    EUCall* CallMilstein_VDC = new EUCall(Milstein_VDC, 100, r, maturity);
+    std::cout << "Price Call Euler VDC: " << CallMilstein_VDC->ComputePrice(10000) << std::endl;
+    std::cout << " (variance : " << CallMilstein_VDC->calculate_variance() << ")" << std::endl;
+    std::cout << "Price Call Euler antithetic VDC: " << CallMilstein_VDC->ComputePrice(10000, true) << std::endl;
+    std::cout << " (variance : " << CallMilstein_VDC->calculate_variance() << ")" << std::endl;
+
+
+
     std::cout << "\n " << std::endl;
 
-    std::cout << "Price Call with Milstein : Van Der Corput \n " << std::endl;
+    
+
+    std::cout << "\n " << std::endl;
+
+    /*std::cout << "Price Call with Milstein : Van Der Corput \n " << std::endl;
     EUCall* CallMilstein_VDC = new EUCall(Milstein_VDC, K, r, maturity);
     std::cout << "Price Call Miltsein VDC : " << CallMilstein_VDC->ComputePrice(10000) << std::endl;
     std::cout << " (variance : " << CallMilstein->calculate_variance() << ")" << std::endl;
     std::cout << "Price Call Miltsein antithetic VDC : " << CallMilstein_VDC->ComputePrice(10000, true) << std::endl;
     std::cout << " (variance : " << CallMilstein->calculate_variance() << ")" << std::endl;
     std::cout << "Price Call Miltsein Control Variate VDC : " << CallMilstein_VDC->ComputePrice_ControlVariate(1000) << std::endl;
-    std::cout << " (variance : " << CallMilstein->calculate_variance() << ")" << std::endl;
+    std::cout << " (variance : " << CallMilstein->calculate_variance() << ")" << std::endl;*/
 
-    // ---------------------------------------------------------------------
+    // ---------------------------------------------------------------------*/
 
     EUBasketCall* BasketCallEuler = new EUBasketCall(EulerND, K, R, maturity, W, S, VCV);
     EUBasketCall* BasketCallMilstein = new EUBasketCall(MilsteinPD, K, R, maturity, W, S, VCV);
 
     std::cout << "\n " << std::endl;
 
-    std::cout << "Price Basket Call with EulerND : \n" << std::endl;
+    /*std::cout << "Price Basket Call with EulerND : \n" << std::endl;
     std::cout << "Price regular : " << BasketCallEuler->ComputePrice(10000) << std::endl;
     std::cout << " (variance : " << BasketCallEuler->calculate_variance() << ")" << std::endl;
+    std::cout << "lower bound : " << BasketCallEuler->calculate_ConfidenceInterval()[0] << std::endl;
+    std::cout << "upper bound : " << BasketCallEuler->calculate_ConfidenceInterval()[1] << std::endl;
     std::cout << "Price Antithetic : " << BasketCallEuler->ComputePrice(10000, true) << std::endl;
     std::cout << " (variance : " << BasketCallEuler->calculate_variance() << ")" << std::endl;
+    std::cout << "lower bound : " << BasketCallEuler->calculate_ConfidenceInterval()[0] << std::endl;
+    std::cout << "upper bound : " << BasketCallEuler->calculate_ConfidenceInterval()[1] << std::endl;
     std::cout << "Price Control Variate : " << BasketCallEuler->ComputePrice_ControlVariate(10000) << std::endl;
     std::cout << " (variance : " << BasketCallEuler->calculate_variance() << ")" << std::endl;
+    std::cout << "lower bound : " << BasketCallEuler->calculate_ConfidenceInterval()[0] << std::endl;
+    std::cout << "upper bound : " << BasketCallEuler->calculate_ConfidenceInterval()[1] << std::endl;
 
     std::cout << "\n " << std::endl;
 
@@ -180,10 +299,16 @@ int main()
     std::cout << "Price Basket with MilsteinND : \n" << std::endl;
     std::cout << "Price regular : " << BasketCallMilstein->ComputePrice(10000) << std::endl;
     std::cout << " (variance : " << BasketCallMilstein->calculate_variance() << ")" << std::endl;
+    std::cout << "lower bound : " << BasketCallMilstein->calculate_ConfidenceInterval()[0] << std::endl;
+    std::cout << "upper bound : " << BasketCallMilstein->calculate_ConfidenceInterval()[1] << std::endl;
     std::cout << "Price Antithetic : " << BasketCallMilstein->ComputePrice(10000, true) << std::endl;
     std::cout << " (variance : " << BasketCallMilstein->calculate_variance() << ")" << std::endl;
+    std::cout << "lower bound : " << BasketCallMilstein->calculate_ConfidenceInterval()[0] << std::endl;
+    std::cout << "upper bound : " << BasketCallMilstein->calculate_ConfidenceInterval()[1] << std::endl;
     std::cout << "Test ComputePrice_ControlVariate : " << BasketCallMilstein->ComputePrice_ControlVariate(10000) << std::endl;
     std::cout << " (variance : " << BasketCallMilstein->calculate_variance() << ")" << std::endl;
+    std::cout << "lower bound : " << BasketCallMilstein->calculate_ConfidenceInterval()[0] << std::endl;
+    std::cout << "upper bound : " << BasketCallMilstein->calculate_ConfidenceInterval()[1] << std::endl;*/
 
     std::cout << "\n " << std::endl;
 
@@ -195,7 +320,7 @@ int main()
     std::cout << "\n " << std::endl;
     
     
-    BermudanCall* Bermudan_Euler = new BermudanCall(Euler, K, r, maturity, c);
+    /*BermudanCall* Bermudan_Euler = new BermudanCall(Euler, K, r, maturity, c);
     std::cout << "Price Bermudan Call Euler: \n" << std::endl;
     std::cout << "Price regular :" << Bermudan_Euler->ComputePrice(10000) << std::endl;
     std::cout << " (variance : " << Bermudan_Euler->calculate_variance() << ")" << std::endl;
@@ -213,9 +338,9 @@ int main()
     std::cout << "Price antithetic : " << Bermudan_Milstein->ComputePrice(10000,true) << std::endl;
     std::cout << " (variance : " << Bermudan_Milstein->calculate_variance() << ")" << std::endl;
     std::cout << "Price control variate : " << Bermudan_Milstein->ComputePrice_ControlVariate(10000) << std::endl;
-    std::cout << " (variance : " << Bermudan_Milstein->calculate_variance() << ")" << std::endl;
+    std::cout << " (variance : " << Bermudan_Milstein->calculate_variance() << ")" << std::endl;*/
 
-    std::cout << "\n " << std::endl;*/
+    std::cout << "\n " << std::endl;
 
     std::cout << "Bermudan Basket Call \n" << std::endl;
 
@@ -223,10 +348,16 @@ int main()
     std::cout << "Price Bermudan Basket Call Euler : \n " << std::endl;
     std::cout << "Price regular : " << BermudanBasket_Euler->ComputePrice(10000) << std::endl;
     std::cout << " (variance : " << BermudanBasket_Euler->calculate_variance() << ")" << std::endl;
+    std::cout << "lower bound : " << BermudanBasket_Euler->calculate_ConfidenceInterval()[0] << std::endl;
+    std::cout << "upper bound : " << BermudanBasket_Euler->calculate_ConfidenceInterval()[1] << std::endl;
     std::cout << "Price antithetic : " << BermudanBasket_Euler->ComputePrice(10000,true) << std::endl;
     std::cout << " (variance : " << BermudanBasket_Euler->calculate_variance() << ")" << std::endl;
+    std::cout << "lower bound : " << BermudanBasket_Euler->calculate_ConfidenceInterval()[0] << std::endl;
+    std::cout << "upper bound : " << BermudanBasket_Euler->calculate_ConfidenceInterval()[1] << std::endl;
     std::cout << "Price control variate : " << BermudanBasket_Euler->ComputePrice_ControlVariate(10000) << std::endl;
     std::cout << " (variance : " << BermudanBasket_Euler->calculate_variance() << ")" << std::endl;
+    std::cout << "lower bound : " << BermudanBasket_Euler->calculate_ConfidenceInterval()[0] << std::endl;
+    std::cout << "upper bound : " << BermudanBasket_Euler->calculate_ConfidenceInterval()[1] << std::endl;
     
     std::cout << "\n " << std::endl;
     
@@ -234,10 +365,16 @@ int main()
     std::cout << "Price Bermudan Basket Call Milstein : \n" << std::endl;
     std::cout << "Price regular : " << BermudanBasket_Milstein->ComputePrice(10000) << std::endl;
     std::cout << " (variance : " << BermudanBasket_Milstein->calculate_variance() << ")" << std::endl;
+    std::cout << "lower bound : " << BermudanBasket_Milstein->calculate_ConfidenceInterval()[0] << std::endl;
+    std::cout << "upper bound : " << BermudanBasket_Milstein->calculate_ConfidenceInterval()[1] << std::endl;
     std::cout << "Price antithetic : " << BermudanBasket_Milstein->ComputePrice(10000,true) << std::endl;
     std::cout << " (variance : " << BermudanBasket_Milstein->calculate_variance() << ")" << std::endl;
+    std::cout << "lower bound : " << BermudanBasket_Milstein->calculate_ConfidenceInterval()[0] << std::endl;
+    std::cout << "upper bound : " << BermudanBasket_Milstein->calculate_ConfidenceInterval()[1] << std::endl;
     std::cout << "Price control variate : " << BermudanBasket_Milstein->ComputePrice_ControlVariate(10000) << std::endl;
     std::cout << " (variance : " << BermudanBasket_Milstein->calculate_variance() << ")" << std::endl;
+    std::cout << "lower bound : " << BermudanBasket_Milstein->calculate_ConfidenceInterval()[0] << std::endl;
+    std::cout << "upper bound : " << BermudanBasket_Milstein->calculate_ConfidenceInterval()[1] << std::endl;
 }
 
 

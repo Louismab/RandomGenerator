@@ -68,6 +68,8 @@ void BSEULERND::Simulate(double start_time, double end_time, size_t nb_steps)
 
 void BSEULERND::Simulate_Antithetic(double start_time, double end_time, size_t nb_steps)
 {
+    //For each dimension, create a single path and the associated antithetic path
+
     double dt = (end_time - start_time) / nb_steps;
     Eigen::VectorXd last = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(s.data(), s.size());
     Eigen::VectorXd last_anti = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(s.data(), s.size());

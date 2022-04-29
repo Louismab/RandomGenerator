@@ -60,12 +60,10 @@ std::vector<double> Option::calculate_ConfidenceInterval(double alpha)
 	double q;
 	if (alpha == 0.99)
 	{
-		std::cout << "0.99" << std::endl;
 		q = 2.576;
 	}
 	else if (alpha == 0.95)
 	{
-		std::cout << "0.95" << std::endl;
 		q = 1.96;
 	}
 	else

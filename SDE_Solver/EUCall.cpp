@@ -76,3 +76,24 @@ double EUCall::ComputePrice_ControlVariate(int NbSim)
 
 	return price;
 }
+
+double EUCall::ComputePrice_VDC(int NbSim)
+{
+	double somme = 0.;
+	double last_value1;
+	double last_value2;
+	double price;
+
+	v.clear();
+	v.resize(NbSim);
+
+	for (int n = 0; n < NbSim; ++n)
+	{
+		process->Simulate_VDC(0, T, T * 365,n, NbSim);
+		last_value1 = std::max(process->Get_Value(T) - K, 0.);
+		somme = somme + last_value1;
+		v[n] = last_value1;
+	}
+	price = std::exp(-r[0] * T) * (somme / NbSim);
+	return price;
+}

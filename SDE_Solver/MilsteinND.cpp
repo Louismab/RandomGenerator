@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "MilsteinND.h"
 #include <math.h>
+#include <algorithm>
+#include <random>
 
 using namespace Eigen;
 
@@ -61,7 +63,6 @@ void MilsteinND::Simulate(double start_time, double end_time, size_t nb_steps)
 
         Eigen::VectorXd next = last + last.cwiseProduct(X);
         last = next;
-        //std::cout << "last: " << last << std::endl;
 
         for (int j = 0;j < dim;j++)
         {
@@ -116,6 +117,85 @@ void MilsteinND::Simulate_Antithetic(double start_time, double end_time, size_t 
         {
             paths[j]->AddValue(last[j]);
             paths_antithetic[j]->AddValue(last_anti[j]);
+        }
+
+    }
+}
+
+void MilsteinND::Simulate_VDC(double start_time, double end_time, size_t nb_steps, myLong sim, myLong nbSim)
+{
+    double dt = (end_time - start_time) / nb_steps;
+    Eigen::VectorXd last = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(s.data(), s.size());
+    Eigen::MatrixXd x;
+    std::vector<double> y;
+
+    if (M_VDC.rows() != nbSim)
+    {
+        M_VDC.resize(nbSim, dim);
+        for (size_t i = 0; i < nbSim; i++)
+        {
+            y = gen->GenerateVectorVDC(dim, i);
+            for (size_t j = 0; j < dim; j++)
+            {
+                M_VDC(i, j) = y[j];
+            }
+        }
+
+    }
+
+    for (int i = 0;i < dim;i++)
+    {
+        paths[i] = new SinglePath(start_time, end_time, nb_steps);
+        paths[i]->AddValue(last[i]);
+    }
+
+    Eigen::VectorXd dW_M = M_VDC.row(sim) * pow(dt, 0.5);
+
+    Eigen::VectorXd R_M = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(r.data(), r.size());
+
+    Eigen::MatrixXd B_square = B * B;
+
+    Eigen::VectorXd T = 0.5 * VCV.diagonal();
+
+    Eigen::VectorXd Z = B * dW_M;
+
+    Eigen::VectorXd X = (R_M - T) * dt + Z + 0.5 * (Z.cwiseProduct(Z));
+
+    Eigen::VectorXd next = last + last.cwiseProduct(X);
+    last = next;
+
+    for (int j = 0;j < dim;j++)
+    {
+        paths[j]->AddValue(last[j]);
+    }
+
+    for (int i = 0;i < nb_steps;i++)
+    {
+        x = M_VDC;
+
+        for (size_t j = 0;j < dim;j++)
+        {
+            auto rng = std::default_random_engine{ i * (j + 1) };
+            std::shuffle(x.col(j).begin(), x.col(j).end(), rng);
+        }
+        Eigen::VectorXd dW_M = x.row(sim) * pow(dt, 0.5);
+
+        Eigen::VectorXd R_M = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(r.data(), r.size());
+
+        Eigen::MatrixXd B_square = B * B;
+
+        Eigen::VectorXd T = 0.5 * VCV.diagonal();
+
+        Eigen::VectorXd Z = B * dW_M;
+
+        Eigen::VectorXd X = (R_M - T) * dt + Z + 0.5 * (Z.cwiseProduct(Z));
+
+        Eigen::VectorXd next = last + last.cwiseProduct(X);
+        last = next;
+
+        for (int j = 0;j < dim;j++)
+        {
+            paths[j]->AddValue(last[j]);
         }
 
     }

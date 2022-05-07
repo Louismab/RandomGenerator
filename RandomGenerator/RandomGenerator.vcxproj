@@ -179,7 +179,6 @@
     <ClInclude Include="RandomGenerator.h" />
     <ClInclude Include="UniformGenerator.h" />
     <ClInclude Include="VanDerCorput.h" />
-    <ClInclude Include="VanDerCorputBase3.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bernoulli.cpp" />
@@ -211,7 +210,6 @@
     <ClCompile Include="RandomGenerator.cpp" />
     <ClCompile Include="UniformGenerator.cpp" />
     <ClCompile Include="VanDerCorput.cpp" />
-    <ClCompile Include="VanDerCorputBase3.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

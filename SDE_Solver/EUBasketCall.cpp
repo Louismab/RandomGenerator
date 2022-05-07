@@ -156,3 +156,28 @@ double Compute_E_Y(std::vector<double> S, std::vector<double> weights, double K,
 	
 }
 
+double EUBasketCall::ComputePrice_VDC(int NbSim)
+{
+	double somme = 0.;
+	double last_value1;
+	double last_value2;
+	double WS_T;
+	double WS_T_anti;
+	double price;
+
+	v.clear();
+	v.resize(NbSim);
+
+	for (int n = 0; n < NbSim; ++n)
+	{
+		process->Simulate_VDC(0, T, T * 365,n, NbSim);
+		std::vector<double> S_T = process->Get_ValueND(T);
+		WS_T = std::inner_product(std::begin(weights), std::end(weights), std::begin(S_T), 0.0);
+		last_value1 = std::max(WS_T - K, 0.);
+		somme = somme + last_value1;
+		v[n] = last_value1;
+	}
+	price = std::exp(-r[0] * T) * (somme / NbSim);
+
+	return price;;
+}

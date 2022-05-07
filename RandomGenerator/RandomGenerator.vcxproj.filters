@@ -87,9 +87,6 @@
     <ClInclude Include="NormalInverseCdf.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="VanDerCorputBase3.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="NormalBoxMuller_Quasi.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -162,9 +159,6 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="NormalInverseCdf.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="VanDerCorputBase3.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="NormalBoxMuller_Quasi.cpp">

@@ -8,6 +8,11 @@ class BSEULER1D : public BS1D
 		BSEULER1D(RandomGenerator* _gen, double _s, double _r, double _vol);
 		void Simulate(double start_time, double end_time, size_t nb_steps);
 		void Simulate_Antithetic(double start_time, double end_time, size_t nb_steps);
+		void Simulate_VDC(double start_time, double end_time, size_t nb_steps, myLong sim, myLong nbSim);
 
+	private:
+		std::vector<double> v_VDC;
 };
+
+std::vector<double> first_primeNumbers(myLong N);
 

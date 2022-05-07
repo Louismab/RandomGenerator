@@ -235,8 +235,10 @@ int main()
     std::cout << "Price Call Euler Control Variate: " << CallEuler->ComputePrice_ControlVariate(1000) << std::endl;
     std::cout << " (variance : " << CallEuler->calculate_variance() << ")" << std::endl;
     EUCall* CallEuler_VDC = new EUCall(Euler_VDC, 100, r, maturity);
-    std::cout << "Price Call Euler VDC: " << CallEuler_VDC->ComputePrice_VDC(1000) << std::endl;
+    std::cout << "Price Call Euler VDC: " << CallEuler_VDC->ComputePrice_VDC(5000) << std::endl;
     std::cout << " (variance : " << CallEuler_VDC->calculate_variance() << ")" << std::endl;
+    std::cout << "lower bound : " << CallEuler_VDC->calculate_ConfidenceInterval()[0] << std::endl;
+    std::cout << "upper bound : " << CallEuler_VDC->calculate_ConfidenceInterval()[1] << std::endl;
 
     /*std::vector<double> IC = CallEuler->calculate_ConfidenceInterval();
     std::cout << "lower bound : " << IC[0];
@@ -252,8 +254,11 @@ int main()
     std::cout << "Price Call Miltsein Control Variate: " << CallMilstein->ComputePrice_ControlVariate(1000) << std::endl;
     std::cout << " (variance : " << CallMilstein->calculate_variance() << ")" << std::endl;
     EUCall* CallMilstein_VDC = new EUCall(Milstein_VDC, 100, r, maturity);
-    std::cout << "Price Call Milstein VDC: " << CallMilstein_VDC->ComputePrice_VDC(1000) << std::endl;
+    std::cout << "Price Call Milstein VDC: " << CallMilstein_VDC->ComputePrice_VDC(5000) << std::endl;
     std::cout << " (variance : " << CallMilstein_VDC->calculate_variance() << ")" << std::endl;
+    std::cout << "lower bound : " << CallMilstein_VDC->calculate_ConfidenceInterval()[0] << std::endl;
+    std::cout << "upper bound : " << CallMilstein_VDC->calculate_ConfidenceInterval()[1] << std::endl;
+
 
     /*Euler_VDC->Simulate(0, 1, 365);
     double FinalValue= Euler_VDC->Get_Value(1);
@@ -313,7 +318,7 @@ int main()
     std::cout << "lower bound : " << BasketCallEuler->calculate_ConfidenceInterval()[0] << std::endl;
     std::cout << "upper bound : " << BasketCallEuler->calculate_ConfidenceInterval()[1] << std::endl;
     EUBasketCall* BasketCallEuler_VDC = new EUBasketCall(EulerND_VDC, K, R, maturity, W, S, VCV);
-    std::cout << "Price Basket Call Euler VDC: " << BasketCallEuler_VDC->ComputePrice_VDC(1000) << std::endl;
+    std::cout << "Price Basket Call Euler VDC: " << BasketCallEuler_VDC->ComputePrice_VDC(5000) << std::endl;
     std::cout << " (variance : " << BasketCallEuler_VDC->calculate_variance() << ")" << std::endl;
     std::cout << "lower bound : " << BasketCallEuler_VDC->calculate_ConfidenceInterval()[0] << std::endl;
     std::cout << "upper bound : " << BasketCallEuler_VDC->calculate_ConfidenceInterval()[1] << std::endl;
@@ -336,7 +341,7 @@ int main()
     std::cout << "lower bound : " << BasketCallMilstein->calculate_ConfidenceInterval()[0] << std::endl;
     std::cout << "upper bound : " << BasketCallMilstein->calculate_ConfidenceInterval()[1] << std::endl;
     EUBasketCall* BasketCallMilstein_VDC = new EUBasketCall(MilsteinPD_VDC, K, R, maturity, W, S, VCV);
-    std::cout << "Price Basket Call Milstein VDC: " << BasketCallMilstein_VDC->ComputePrice_VDC(1000) << std::endl;
+    std::cout << "Price Basket Call Milstein VDC: " << BasketCallMilstein_VDC->ComputePrice_VDC(5000) << std::endl;
     std::cout << " (variance : " << BasketCallMilstein_VDC->calculate_variance() << ")" << std::endl;
     std::cout << "lower bound : " << BasketCallMilstein_VDC->calculate_ConfidenceInterval()[0] << std::endl;
     std::cout << "upper bound : " << BasketCallMilstein_VDC->calculate_ConfidenceInterval()[1] << std::endl;
@@ -360,8 +365,10 @@ int main()
     std::cout << "Price Control Variate: " << Bermudan_Euler->ComputePrice_ControlVariate(10000) << std::endl;
     std::cout << " (variance : " << Bermudan_Euler->calculate_variance() << ")" << std::endl;
     BermudanCall* Bermudan_EulerVDC = new BermudanCall(Euler_VDC, K, r, maturity, c);
-    std::cout << "Price Bermudan Call Euler VDC: " << Bermudan_EulerVDC->ComputePrice_VDC(1000) << std::endl;
+    std::cout << "Price Bermudan Call Euler VDC: " << Bermudan_EulerVDC->ComputePrice_VDC(5000) << std::endl;
     std::cout << " (variance : " << Bermudan_EulerVDC->calculate_variance() << ")" << std::endl;
+    std::cout << "lower bound : " << Bermudan_EulerVDC->calculate_ConfidenceInterval()[0] << std::endl;
+    std::cout << "upper bound : " << Bermudan_EulerVDC->calculate_ConfidenceInterval()[1] << std::endl;
 
     std::cout << "\n " << std::endl;
 
@@ -374,8 +381,10 @@ int main()
     std::cout << "Price control variate : " << Bermudan_Milstein->ComputePrice_ControlVariate(10000) << std::endl;
     std::cout << " (variance : " << Bermudan_Milstein->calculate_variance() << ")" << std::endl;
     BermudanCall* Bermudan_MilsteinVDC = new BermudanCall(Milstein_VDC, K, r, maturity, c);
-    std::cout << "Price Bermudan Call Milstein VDC: " << Bermudan_MilsteinVDC->ComputePrice_VDC(1000) << std::endl;
+    std::cout << "Price Bermudan Call Milstein VDC: " << Bermudan_MilsteinVDC->ComputePrice_VDC(5000) << std::endl;
     std::cout << " (variance : " << Bermudan_MilsteinVDC->calculate_variance() << ")" << std::endl;
+    std::cout << "lower bound : " << Bermudan_MilsteinVDC->calculate_ConfidenceInterval()[0] << std::endl;
+    std::cout << "upper bound : " << Bermudan_MilsteinVDC->calculate_ConfidenceInterval()[1] << std::endl;
 
     std::cout << "\n " << std::endl;
 
@@ -394,7 +403,7 @@ int main()
     std::cout << "Price control variate : " << BermudanBasket_Euler->ComputePrice_ControlVariate(10000) << std::endl;
     std::cout << " (variance : " << BermudanBasket_Euler->calculate_variance() << ")" << std::endl;
     BermudanBasketCall* BermudanBasket_EulerVDC = new BermudanBasketCall(EulerND_VDC, K, R, maturity, W, c, S, VCV);
-    std::cout << "Price Bermudan Basket Call Euler VDC: " << BermudanBasket_EulerVDC->ComputePrice_VDC(1000) << std::endl;
+    std::cout << "Price Bermudan Basket Call Euler VDC: " << BermudanBasket_EulerVDC->ComputePrice_VDC(5000) << std::endl;
     std::cout << " (variance : " << BermudanBasket_EulerVDC->calculate_variance() << ")" << std::endl;
     std::cout << "lower bound : " << BermudanBasket_EulerVDC->calculate_ConfidenceInterval()[0] << std::endl;
     std::cout << "upper bound : " << BermudanBasket_EulerVDC->calculate_ConfidenceInterval()[1] << std::endl;
@@ -416,7 +425,7 @@ int main()
     std::cout << "lower bound : " << BermudanBasket_Milstein->calculate_ConfidenceInterval()[0] << std::endl;
     std::cout << "upper bound : " << BermudanBasket_Milstein->calculate_ConfidenceInterval()[1] << std::endl;
     BermudanBasketCall* BermudanBasket_Milstein_VDC = new BermudanBasketCall(MilsteinPD_VDC, K, R, maturity, W, c, S, VCV);
-    std::cout << "Price Bermudan Basket Call Milstein VDC: " << BermudanBasket_Milstein_VDC->ComputePrice_VDC(1000) << std::endl;
+    std::cout << "Price Bermudan Basket Call Milstein VDC: " << BermudanBasket_Milstein_VDC->ComputePrice_VDC(5000) << std::endl;
     std::cout << " (variance : " << BermudanBasket_Milstein_VDC->calculate_variance() << ")" << std::endl;
     std::cout << "lower bound : " << BermudanBasket_Milstein_VDC->calculate_ConfidenceInterval()[0] << std::endl;
     std::cout << "upper bound : " << BermudanBasket_Milstein_VDC->calculate_ConfidenceInterval()[1] << std::endl;

@@ -66,6 +66,7 @@ int main()
     //double maturity = 1.;
     double K = 100;
     double nb_simul = 10000;
+    double nb_simul_vdc = 5000; // Too long otherwise
 
     // Single Underlying
     double s = 100.;
@@ -80,10 +81,8 @@ int main()
     double nb_stocks = S.size();
 
     // Bermudan Execution Dates
-    // For one month maturity 
-    std::vector<double> c = { 5. / 365., 15. / 365.,30. / 365. };
-    // For one year maturity 
-    //std::vector<double> c = { 1. / 4., 1. / 2.,3. / 4.,1. };
+    std::vector<double> c = { 5. / 365., 15. / 365.,30. / 365. }; // For one month maturity 
+    //std::vector<double> c = { 1. / 4., 1. / 2.,3. / 4.,1. }; // For one year maturity 
 
     //Display Parameters in the Command window
     std::cout << "__________________  PARAMETERS: __________________ \n" << std::endl;
@@ -185,7 +184,7 @@ int main()
     std::cout << " - IC Upper Bound : " << CallEuler->calculate_ConfidenceInterval()[1] << std::endl;
     std::cout << "\n" << std::endl;
 
-    std::cout << "Price European Call Euler VDC: " << CallEuler_VDC->ComputePrice_VDC(nb_simul) << std::endl;
+    std::cout << "Price European Call Euler VDC: " << CallEuler_VDC->ComputePrice_VDC(nb_simul_vdc) << std::endl;
     std::cout << " - Variance : " << CallEuler_VDC->calculate_variance() << std::endl;
     std::cout << " - IC Lower Bound : " << CallEuler_VDC->calculate_ConfidenceInterval()[0] << std::endl;
     std::cout << " - IC Upper Bound : " << CallEuler_VDC->calculate_ConfidenceInterval()[1] << std::endl;
@@ -215,7 +214,7 @@ int main()
     std::cout << " - IC Upper Bound : " << CallMilstein->calculate_ConfidenceInterval()[1] << std::endl;
     std::cout << "\n" << std::endl;
     
-    std::cout << "Price European Call Milstein VDC: " << CallMilstein_VDC->ComputePrice_VDC(nb_simul) << std::endl;
+    std::cout << "Price European Call Milstein VDC: " << CallMilstein_VDC->ComputePrice_VDC(nb_simul_vdc) << std::endl;
     std::cout << " - Variance : " << CallMilstein_VDC->calculate_variance() << std::endl;
     std::cout << " - IC Lower Bound : " << CallMilstein_VDC->calculate_ConfidenceInterval()[0] << std::endl;
     std::cout << " - IC Upper Bound : " << CallMilstein_VDC->calculate_ConfidenceInterval()[1] << std::endl;
@@ -248,14 +247,13 @@ int main()
     std::cout << " - IC Upper Bound : " << Bermudan_Euler->calculate_ConfidenceInterval()[1] << std::endl;
     std::cout << "\n" << std::endl;
 
-    std::cout << "Price Bermudan Call Euler VDC: " << Bermudan_EulerVDC->ComputePrice_VDC(nb_simul) << std::endl;
+    std::cout << "Price Bermudan Call Euler VDC: " << Bermudan_EulerVDC->ComputePrice_VDC(nb_simul_vdc) << std::endl;
     std::cout << " - Variance : " << Bermudan_EulerVDC->calculate_variance() << std::endl;
     std::cout << " - IC Lower Bound : " << Bermudan_EulerVDC->calculate_ConfidenceInterval()[0] << std::endl;
     std::cout << " - IC Upper Bound : " << Bermudan_EulerVDC->calculate_ConfidenceInterval()[1] << std::endl;
     std::cout << "\n" << "\n" << std::endl;
 
     //MILSTEIN
-
     BermudanCall* Bermudan_Milstein = new BermudanCall(Milstein, K, r, maturity, c);
     BermudanCall* Bermudan_MilsteinVDC = new BermudanCall(Milstein_VDC, K, r, maturity, c);
 
@@ -279,7 +277,7 @@ int main()
     std::cout << " - IC Upper Bound : " << Bermudan_Milstein->calculate_ConfidenceInterval()[1] << std::endl;
     std::cout << "\n" << std::endl;
 
-    std::cout << "Price Bermudan Call Milstein VDC: " << Bermudan_MilsteinVDC->ComputePrice_VDC(nb_simul) << std::endl;
+    std::cout << "Price Bermudan Call Milstein VDC: " << Bermudan_MilsteinVDC->ComputePrice_VDC(nb_simul_vdc) << std::endl;
     std::cout << " - Variance : " << Bermudan_MilsteinVDC->calculate_variance() << std::endl;
     std::cout << " - IC Lower Bound : " << Bermudan_MilsteinVDC->calculate_ConfidenceInterval()[0] << std::endl;
     std::cout << " - IC Upper Bound : " << Bermudan_MilsteinVDC->calculate_ConfidenceInterval()[1] << std::endl;
@@ -317,7 +315,7 @@ int main()
     std::cout << " - IC Upper Bound : " << BasketCallEuler->calculate_ConfidenceInterval()[1] << std::endl;
     std::cout << "\n" << std::endl;
 
-    std::cout << "Price European Basket Call Euler VDC: " << BasketCallEuler_VDC->ComputePrice_VDC(nb_simul) << std::endl;
+    std::cout << "Price European Basket Call Euler VDC: " << BasketCallEuler_VDC->ComputePrice_VDC(nb_simul_vdc) << std::endl;
     std::cout << " - Variance : " << BasketCallEuler_VDC->calculate_variance() << std::endl;
     std::cout << " - IC Lower Bound : " << BasketCallEuler_VDC->calculate_ConfidenceInterval()[0] << std::endl;
     std::cout << " - IC Upper Bound : " << BasketCallEuler_VDC->calculate_ConfidenceInterval()[1] << std::endl;
@@ -347,7 +345,7 @@ int main()
     std::cout << " - IC Upper Bound : " << BasketCallMilstein->calculate_ConfidenceInterval()[1] << std::endl;
     std::cout << "\n" << std::endl;
 
-    std::cout << "Price European Basket Call Milstein VDC: " << BasketCallMilstein_VDC->ComputePrice_VDC(nb_simul) << std::endl;
+    std::cout << "Price European Basket Call Milstein VDC: " << BasketCallMilstein_VDC->ComputePrice_VDC(nb_simul_vdc) << std::endl;
     std::cout << " - Variance : " << BasketCallMilstein_VDC->calculate_variance() << std::endl;
     std::cout << " - IC Lower Bound : " << BasketCallMilstein_VDC->calculate_ConfidenceInterval()[0] << std::endl;
     std::cout << " - IC Upper Bound : " << BasketCallMilstein_VDC->calculate_ConfidenceInterval()[1] << std::endl;
@@ -380,7 +378,7 @@ int main()
     std::cout << " - IC Upper Bound : " << BermudanBasket_Euler->calculate_ConfidenceInterval()[1] << std::endl;
     std::cout << "\n" << std::endl;
 
-    std::cout << "Price Bermudan Basket Call Euler VDC: " << BermudanBasket_EulerVDC->ComputePrice_VDC(nb_simul) << std::endl;
+    std::cout << "Price Bermudan Basket Call Euler VDC: " << BermudanBasket_EulerVDC->ComputePrice_VDC(nb_simul_vdc) << std::endl;
     std::cout << " - Variance : " << BermudanBasket_EulerVDC->calculate_variance() << std::endl;
     std::cout << " - IC Lower Bound : " << BermudanBasket_EulerVDC->calculate_ConfidenceInterval()[0] << std::endl;
     std::cout << " - IC Upper Bound : " << BermudanBasket_EulerVDC->calculate_ConfidenceInterval()[1] << std::endl;
@@ -410,7 +408,7 @@ int main()
     std::cout << " - IC Upper Bound : " << BermudanBasket_Milstein->calculate_ConfidenceInterval()[1] << std::endl;
     std::cout << "\n" << std::endl;
 
-    std::cout << "Price Bermudan Basket Call Milstein VDC: " << BermudanBasket_Milstein_VDC->ComputePrice_VDC(nb_simul) << std::endl;
+    std::cout << "Price Bermudan Basket Call Milstein VDC: " << BermudanBasket_Milstein_VDC->ComputePrice_VDC(nb_simul_vdc) << std::endl;
     std::cout << " - Variance : " << BermudanBasket_Milstein_VDC->calculate_variance() << std::endl;
     std::cout << " - IC Lower Bound : " << BermudanBasket_Milstein_VDC->calculate_ConfidenceInterval()[0] << std::endl;
     std::cout << " - IC Upper Bound : " << BermudanBasket_Milstein_VDC->calculate_ConfidenceInterval()[1] << std::endl;

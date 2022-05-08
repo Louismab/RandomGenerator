@@ -42,13 +42,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -124,8 +124,9 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\adamb\Desktop\Master 203\M2\Numerical Finance\Projet v2\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies);SDE_Solver.lib;RandomGenerator.lib;</AdditionalDependencies>
+      <OutputFile>C:\Users\sofia\source\repos\RandomGenerator\x64\Debug</OutputFile>
+      <AdditionalLibraryDirectories>C:\Users\sofia\source\repos\RandomGenerator\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -143,11 +144,17 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\sofia\source\repos\RandomGenerator\RandomGenerator\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <OutputFile>C:\Users\sofia\source\repos\RandomGenerator\x64\Debug</OutputFile>
+      <AdditionalLibraryDirectories>C:\Users\sofia\source\repos\RandomGenerator\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Testeur.cpp" />
+    <ClCompile Include="Testeur.cpp">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\sofia\OneDrive\Bureau\M2 203\S2\Numerical;C:\Users\sofia\source\repos\RandomGenerator\RandomGenerator;C:\Users\sofia\source\repos\RandomGenerator\SDE_Solver;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\sofia\OneDrive\Bureau\M2 203\S2\Numerical;C:\Users\sofia\source\repos\RandomGenerator\RandomGenerator;C:\Users\sofia\source\repos\RandomGenerator\SDE_Solver;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatAngleIncludeAsExternal Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</TreatAngleIncludeAsExternal>
+      <TreatAngleIncludeAsExternal Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</TreatAngleIncludeAsExternal>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RandomGenerator\RandomGenerator.vcxproj">

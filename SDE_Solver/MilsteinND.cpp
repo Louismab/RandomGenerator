@@ -173,7 +173,7 @@ void MilsteinND::Simulate_VDC(double start_time, double end_time, size_t nb_step
     {
         x = M_VDC;
 
-        for (size_t j = 0;j < dim;j++)
+        for (unsigned int j = 0;j < dim;j++)
         {
             auto rng = std::default_random_engine{ i * (j + 1) };
             std::shuffle(x.col(j).begin(), x.col(j).end(), rng);

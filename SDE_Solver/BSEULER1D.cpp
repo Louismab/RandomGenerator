@@ -107,7 +107,7 @@ void BSEULER1D::Simulate_VDC(double start_time, double end_time, size_t nb_steps
 	path->AddValue(next);
 	last = next;
 
-	for (size_t i = 1; i < nb_steps; i++)
+	for (unsigned int i = 1; i < nb_steps; i++)
 	{
 		/*myLong randomNumber = genUniform->Generate() * nbSim;
 		if (randomNumber == 0)

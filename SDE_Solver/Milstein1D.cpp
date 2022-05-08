@@ -100,7 +100,7 @@ void Milstein1D::Simulate_VDC(double start_time, double end_time, size_t nb_step
 	path->AddValue(next);
 	last = next;
 
-	for (size_t i = 1; i < nb_steps; i++)
+	for (unsigned int i = 1; i < nb_steps; i++)
 	{
 		x = v_VDC;
 		auto rng = std::default_random_engine{ i };

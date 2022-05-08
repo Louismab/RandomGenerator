@@ -155,7 +155,7 @@ void BSEULERND::Simulate_VDC(double start_time, double end_time, size_t nb_steps
     {
         x = M_VDC;
         //std::cout << "dim" << std::endl;
-        for (size_t j = 0;j < dim;j++)
+        for (unsigned int j = 0;j < dim;j++)
         {
             //std::cout << "ok2" << std::endl;
             auto rng = std::default_random_engine{ i*(j+1) };

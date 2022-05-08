@@ -11,13 +11,12 @@ double VanDerCorput::Generate()
 {
     std::vector<int> b = IntToInversePAdicExpansion(current_n, base);
     double phi = 0;
-    for (int k = 0; k < b.size(); k++)
+    for (int k = 0;k < b.size();k++)
     {
         phi += b[k] / pow(base,(k + 1));
     }
-    current_n = current_n + 1;
+    current_n= current_n+1;
     return phi;
-    
 }
 
 std::vector<int> IntToInversePAdicExpansion(int n, int base)
@@ -33,5 +32,3 @@ std::vector<int> IntToInversePAdicExpansion(int n, int base)
 
     return b;
 }
-
-

@@ -11,6 +11,7 @@ public:
 
 	double ComputePrice(int NbSim, bool antithetic = false);
 	double ComputePrice_ControlVariate(int NbSim);
+	double ComputePrice_VDC(int NbSim);
 	//double ComputePrice_Antithetic(int NbSim);
 
 private:

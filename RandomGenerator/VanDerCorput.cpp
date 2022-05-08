@@ -2,34 +2,33 @@
 #include "VanDerCorput.h"
 #include <vector>
 
-VanDerCorput::VanDerCorput()
-	: QuasiGenerator()
+VanDerCorput::VanDerCorput(int _base, myLong _currentNumber)
+	: QuasiGenerator(_currentNumber), base(_base)
 {
 }
 
 double VanDerCorput::Generate()
 {
-    
-    std::vector<int> b = IntToInverseBinary(current_n);
+    std::vector<int> b = IntToInversePAdicExpansion(current_n, base);
     double phi = 0;
     for (int k = 0; k < b.size(); k++)
     {
-        phi += b[k] / pow(2, (k + 1));
+        phi += b[k] / pow(base,(k + 1));
     }
     current_n = current_n + 1;
     return phi;
     
 }
 
-std::vector<int> IntToInverseBinary(int n)
+std::vector<int> IntToInversePAdicExpansion(int n, int base)
 {
     std::vector<int> b;
     
     while (n > 0)
     {
-        int d = n % 2;
+        int d = n % base;
         b.push_back(d);
-        n = n / 2;
+        n = n / base;
     }
 
     return b;

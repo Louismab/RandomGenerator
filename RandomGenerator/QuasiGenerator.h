@@ -4,7 +4,7 @@
 class QuasiGenerator : public UniformGenerator
 {
 	public:
-		QuasiGenerator();
+		QuasiGenerator(myLong _current_n=1);
 
 	protected:
 		myLong current_n;

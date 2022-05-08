@@ -169,6 +169,7 @@
     <ClInclude Include="LinearCongruential.h" />
     <ClInclude Include="Normal.h" />
     <ClInclude Include="NormalBoxMuller.h" />
+    <ClInclude Include="NormalBoxMuller_Quasi.h" />
     <ClInclude Include="NormalCLT.h" />
     <ClInclude Include="NormalInverseCdf.h" />
     <ClInclude Include="pch.h" />
@@ -194,6 +195,7 @@
     <ClCompile Include="LinearCongruential.cpp" />
     <ClCompile Include="Normal.cpp" />
     <ClCompile Include="NormalBoxMuller.cpp" />
+    <ClCompile Include="NormalBoxMuller_Quasi.cpp" />
     <ClCompile Include="NormalCLT.cpp" />
     <ClCompile Include="NormalInverseCdf.cpp" />
     <ClCompile Include="pch.cpp">

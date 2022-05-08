@@ -1,28 +1,13 @@
-Plan d'attaque:
+PPRICING OF BERMUDAN BASKET OPTIONS - NUMERICAL FINANCE PROJECT
 
-PROBLEMES
+SCOPE : The goal of this project is to price a Bermudan Basket Option using Monte Carlo simulation, and combine several variance reduction methods in order to reach a minimal simulation variance. The underlying diffusion is assumed to be a multi-dimensional Black-Scholes diffusion
 
-•	Corrriger euler ND: quellle variance/vol prend il en compte?
+The project can be implemented either in C++ or Python
+- A main program must define and control the parameters to use, then call different Classes to perform the simulation
+- The project’s architecture is free, and its design will particularly be appreciated.
+- The program must be fully commented and parameters must be checked for consistency.
 
-•	Corriger Antithétique : cf github 
- 
-•	 ? Get Value ==> Probleme matu et step
-
-•	 probleme vol = standardiser : vol /variance  \n
-
-•	 detecter dim en fction de S dans les process de diffusion
-
-•	Cariable de controle: meme rusltat exactement entre Milstein et Euler
-
-•	Milstein ND pb
-
-•	Antithéti avec Milstein
-
-IMPLENTATION
-
-•	Sobol : https://web.maths.unsw.edu.au/~fkuo/sobol/ http://paddy3118.blogspot.com/2019/11/quasi-random-sobol-sequence.html https://github.com/dendisuhubdy/quasirandom_sequences/blob/master/cpp/sobol.cpp
-
-•	Very OOTM option ==> prix ne doit pas etre = 0
-
-•	Implémenter L&S (cf. mémoire) pour les Bermudan options  question 2 projet 
-https://www.math.univ-toulouse.fr/CREMMA/BouchardNotes.pdf
+In addition to your program, you must also produce a User Guide PDF file that :
+- Explains the modifiable variables in the main function
+- Illustrates your results for different sets of inputs through graphs and tables
+- Details your analysis and comments

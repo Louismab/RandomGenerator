@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "BSEULERND.h"
 #include <math.h> 
-
+#include <algorithm>
+#include <random>
 
 using namespace Eigen;
 
@@ -68,6 +69,8 @@ void BSEULERND::Simulate(double start_time, double end_time, size_t nb_steps)
 
 void BSEULERND::Simulate_Antithetic(double start_time, double end_time, size_t nb_steps)
 {
+    //For each dimension, create a single path and the associated antithetic path
+
     double dt = (end_time - start_time) / nb_steps;
     Eigen::VectorXd last = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(s.data(), s.size());
     Eigen::VectorXd last_anti = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(s.data(), s.size());
@@ -108,6 +111,74 @@ void BSEULERND::Simulate_Antithetic(double start_time, double end_time, size_t n
     }
 }
 
+void BSEULERND::Simulate_VDC(double start_time, double end_time, size_t nb_steps, myLong sim, myLong nbSim)
+{
+    double dt = (end_time - start_time) / nb_steps;
+    Eigen::VectorXd last = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(s.data(), s.size());
+    Eigen::MatrixXd x;
+    std::vector<double> y;
+
+    if (M_VDC.rows() != nbSim)
+    {
+        M_VDC.resize(nbSim, dim);
+        for (size_t i = 0; i < nbSim; i++)
+        {
+            y=gen->GenerateVectorVDC(dim,i);
+            for (size_t j = 0; j < dim; j++)
+            {
+                M_VDC(i, j) = y[j];
+            }
+        }
+
+    }
+
+    for (int i = 0;i < dim;i++)
+    {
+        paths[i] = new SinglePath(start_time, end_time, nb_steps);
+        paths[i]->AddValue(last[i]);
+    }
+    Eigen::VectorXd dW_M = M_VDC.row(sim) * pow(dt, 0.5);
+    std::vector<double> M = r * dt;
+
+    Eigen::VectorXd M_M = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(M.data(), M.size());
+    Eigen::VectorXd Z = M_M + (B * dW_M);
+    Eigen::VectorXd next = last + last.cwiseProduct(Z);
+    last = next;
+
+    for (int j = 0;j < dim;j++)
+    {
+        paths[j]->AddValue(last[j]);
+    }
+
+    
+    for (int i = 1;i < nb_steps;i++)
+    {
+        x = M_VDC;
+        //std::cout << "dim" << std::endl;
+        for (size_t j = 0;j < dim;j++)
+        {
+            //std::cout << "ok2" << std::endl;
+            auto rng = std::default_random_engine{ i*(j+1) };
+            std::shuffle(x.col(j).begin(), x.col(j).end(), rng);
+        }
+       
+        Eigen::VectorXd dW = x.row(sim) * pow(dt, 0.5);
+        //std::cout << dW << std::endl;
+        std::vector<double> M = r * dt;
+
+        Eigen::VectorXd M_M = Eigen::Map<Eigen::VectorXd, Eigen::Unaligned>(M.data(), M.size());
+        Eigen::VectorXd Z = M_M + (B * dW);
+        Eigen::VectorXd next = last + last.cwiseProduct(Z);
+        last = next;
+        
+
+        for (int j = 0;j < dim;j++)
+        {
+            paths[j]->AddValue(last[j]);
+        }
+
+    }
+}
 
 /*int BSEULERND::get_dim()
 {

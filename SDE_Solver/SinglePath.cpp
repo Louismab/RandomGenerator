@@ -27,6 +27,7 @@ void SinglePath::AddValue(double val)
 
 const double SinglePath::GetValue(double time)
 {
+	// returns the value of the singlepath at the time given in input (performs an interpolation when there is no value for the time given in input)
 	size_t i = 1;
 	
 	if (time < Times[Times.size()-1])

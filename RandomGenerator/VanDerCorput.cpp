@@ -9,14 +9,16 @@ VanDerCorput::VanDerCorput()
 
 double VanDerCorput::Generate()
 {
+    
     std::vector<int> b = IntToInverseBinary(current_n);
     double phi = 0;
-    for (int k = 0;k < b.size();k++)
+    for (int k = 0; k < b.size(); k++)
     {
-        phi += b[k] / pow(2,(k + 1));
+        phi += b[k] / pow(2, (k + 1));
     }
-    current_n= current_n+1;
+    current_n = current_n + 1;
     return phi;
+    
 }
 
 std::vector<int> IntToInverseBinary(int n)
@@ -32,3 +34,5 @@ std::vector<int> IntToInverseBinary(int n)
 
     return b;
 }
+
+

@@ -66,7 +66,7 @@ int main()
     //double maturity = 1.;
     double K = 100;
     double nb_simul = 10000;
-    double nb_simul_vdc = 5000; // Too long otherwise
+    double nb_simul_vdc = 1000; // Too long otherwise
 
     // Single Underlying
     double s = 100.;
